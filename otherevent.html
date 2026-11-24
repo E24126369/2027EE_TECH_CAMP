@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#031321">
+  <meta name="description" content="認識 2027 成大同期舉辦的 AI 運籌營、數創營、建築營與資源營。">
+  <title>同期活動｜2027 成大電機鳳凰科技教師研習營</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#031321;--cyan:#55f4f3;--cyan2:#9effff;--text:#eaffff;--muted:#9bbac8;--line:rgba(85,244,243,.23);--max:1160px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC",sans-serif;line-height:1.75;overflow-x:hidden;
+      background-image:radial-gradient(ellipse at 80% 18%,rgba(0,190,174,.12),transparent 40%),radial-gradient(ellipse at 12% 82%,rgba(0,130,190,.12),transparent 42%)}
+    a{color:inherit}
+    .topbar{position:fixed;z-index:20;inset:0 0 auto;height:78px;padding:0 max(5vw,calc((100vw - var(--max))/2));display:flex;align-items:center;justify-content:space-between;background:rgba(2,12,23,.84);backdrop-filter:blur(16px);border-bottom:1px solid rgba(85,244,243,.16)}
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:800;letter-spacing:.04em}
+    .brand img{width:49px;height:49px;object-fit:cover;border-radius:9px;border:1px solid rgba(106,247,255,.65);box-shadow:0 0 18px rgba(43,220,255,.23)}
+    .brand small{display:block;color:#8eb8c6;font:600 10px "Barlow Condensed",sans-serif;letter-spacing:.19em}
+    nav{display:flex;align-items:center;gap:26px}nav a{text-decoration:none;color:#c5e1e9;font-size:13px;transition:.2s}nav a:hover,nav a.active{color:var(--cyan)}nav .nav-btn{padding:8px 15px;border:1px solid rgba(85,244,243,.48);color:var(--cyan)}
+    .menu{display:none;background:none;color:var(--cyan);border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-size:20px}
+    .hero{min-height:650px;height:min(790px,91svh);position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;padding:115px 7vw 75px;background:#041727}
+    .hero-bg{position:absolute;inset:0;z-index:-5;background:url("otherevent_bg.jpg") center center/cover no-repeat;opacity:.96}
+    .hero-shade{position:absolute;inset:0;z-index:-4;background:linear-gradient(90deg,rgba(2,14,28,.06) 0%,rgba(2,14,28,.2) 38%,rgba(2,14,28,.82) 68%,#031321 100%),linear-gradient(0deg,#031321 0%,transparent 29%,rgba(2,12,24,.08) 100%)}
+    #network-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-3;pointer-events:none}
+    .hero-inner{width:min(var(--max),100%);margin:auto;display:flex;justify-content:flex-end}
+    .hero-copy{width:min(560px,53%);padding:clamp(28px,4vw,48px);background:rgba(3,19,34,.62);border:1px solid rgba(85,244,243,.29);backdrop-filter:blur(10px);position:relative;box-shadow:0 0 55px rgba(0,220,235,.12),inset 0 0 30px rgba(0,202,220,.04)}
+    .hero-copy:before,.hero-copy:after{content:"";position:absolute;width:22px;height:22px;border-color:var(--cyan)}
+    .hero-copy:before{left:-1px;top:-1px;border-left:2px solid;border-top:2px solid}.hero-copy:after{right:-1px;bottom:-1px;border-right:2px solid;border-bottom:2px solid}
+    .kicker{font:600 13px "Barlow Condensed",sans-serif;letter-spacing:.24em;color:var(--cyan);display:flex;align-items:center;gap:12px}.kicker:before{content:"";width:30px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+    h1{font-size:clamp(37px,5vw,59px);line-height:1.2;letter-spacing:.06em;margin:17px 0 15px;background:linear-gradient(100deg,#fff,#a2fcff 70%,#62dfe0);color:transparent;background-clip:text;-webkit-background-clip:text}
+    .hero-copy p{color:#c0dbe3;font-size:14px;line-height:2;margin:0}
+    .hero-meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:27px;padding-top:19px;border-top:1px solid rgba(255,255,255,.14)}.meta{font-size:12px;color:#b6d6df}.meta b{color:var(--cyan);font-weight:600;margin-right:7px}
+    .scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font:12px "Barlow Condensed",sans-serif;letter-spacing:.2em;color:#9bc4d0}.scroll:after{content:"";display:inline-block;width:45px;height:1px;background:var(--cyan);vertical-align:middle;margin-left:12px}
+    .wrap{width:min(var(--max),calc(100% - 48px));margin:auto;padding:88px 0 105px}
+    .heading{text-align:center;margin-bottom:43px}.heading .en{font:600 13px "Barlow Condensed",sans-serif;letter-spacing:.25em;color:var(--cyan)}.heading h2{font-size:clamp(27px,3vw,36px);margin:7px 0}.heading p{font-size:13px;color:var(--muted);margin:0}.heading:after{content:"";display:block;width:52px;height:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);margin:18px auto 0}
+    .intro{max-width:720px;margin:-17px auto 38px;text-align:center;color:#a9c9d3;font-size:13px;line-height:2}
+    .event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .event-card{min-height:245px;position:relative;overflow:hidden;padding:29px 30px 26px;background:linear-gradient(125deg,rgba(8,47,67,.92),rgba(3,21,37,.94));border:1px solid var(--line);transition:transform .25s,border-color .25s,box-shadow .25s}
+    .event-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#9effff,#16b9ce,transparent);box-shadow:0 0 14px rgba(85,244,243,.65)}
+    .event-card:after{content:attr(data-code);position:absolute;right:17px;top:8px;font:700 58px "Barlow Condensed",sans-serif;color:rgba(116,241,246,.055);letter-spacing:.04em;pointer-events:none}
+    .event-card:hover{transform:translateY(-5px);border-color:rgba(85,244,243,.65);box-shadow:0 12px 35px rgba(0,220,235,.11)}
+    .event-top{display:flex;align-items:center;gap:13px;position:relative;z-index:1}
+    .event-icon{width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(85,244,243,.42);background:rgba(51,211,224,.08);color:#9effff;font-size:22px;box-shadow:inset 0 0 18px rgba(53,224,236,.09)}
+    .event-en{font:600 11px "Barlow Condensed",sans-serif;letter-spacing:.18em;color:#6fdde3}
+    .event-card h3{font-size:23px;margin:3px 0 0;letter-spacing:.04em}
+    .event-card p{position:relative;z-index:1;color:#a9c5d0;font-size:13px;line-height:1.95;margin:19px 0 18px;max-width:470px}
+    .event-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(143,226,236,.13);padding-top:13px;position:relative;z-index:1}
+    .event-foot span{font-size:11px;color:#81aab8}.status{font-size:10px!important;letter-spacing:.08em;color:#9cfaff!important;border:1px solid rgba(85,244,243,.3);padding:4px 9px;white-space:nowrap}
+    .bottom{padding:68px 24px;text-align:center;background:radial-gradient(ellipse at center,rgba(0,158,173,.14),transparent 65%)}.bottom h2{font-size:clamp(24px,3vw,34px);margin:0 0 10px}.bottom p{color:var(--muted);font-size:13px;margin:0 0 23px}
+    .button{display:inline-block;text-decoration:none;background:var(--cyan);color:#03202b;font-size:13px;font-weight:800;padding:11px 20px;transition:.2s}.button:hover{transform:translateY(-3px);box-shadow:0 0 25px rgba(85,244,243,.35)}
+    footer{text-align:center;padding:26px 20px;background:#020a12;border-top:1px solid rgba(85,244,243,.13);color:#789aa8;font-size:11px}footer strong{color:#c4edf0;font-weight:600}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .65s,transform .65s}.reveal.show{opacity:1;transform:none}
+    @media(max-width:760px){.hero-copy{width:min(570px,72%)}.event-grid{gap:14px}.event-card{padding:24px 22px}}
+    @media(max-width:620px){
+      .topbar{height:68px;padding:0 17px}.brand img{width:43px;height:43px}.brand{font-size:13px}.menu{display:block}
+      nav{display:none;position:absolute;top:67px;left:0;right:0;padding:17px 22px 22px;background:rgba(2,12,23,.98);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:13px}nav.open{display:flex}nav a{padding:5px 0}nav .nav-btn{text-align:center}
+      .hero{min-height:720px;height:auto;padding:100px 18px 70px;align-items:flex-end}.hero-bg{background-position:27% center}.hero-shade{background:linear-gradient(0deg,rgba(2,14,27,.97),rgba(2,14,27,.75) 49%,rgba(2,14,27,.1))}
+      .hero-inner{justify-content:center}.hero-copy{width:100%;padding:26px 22px;background:rgba(3,19,34,.72)}.hero-copy p{font-size:13px}.hero-meta{gap:9px 17px}.scroll{display:none}
+      .wrap{width:calc(100% - 34px);padding:72px 0 82px}.heading{margin-bottom:32px}.intro{margin:-15px auto 28px}
+      .event-grid{grid-template-columns:1fr}.event-card{min-height:220px}.event-card h3{font-size:21px}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="鳳凰科技教師研習營首頁">
+    <img src="2027ee_techcamp_LOGO.jpg" alt="2027 成大電機鳳凰科技教師研習營 LOGO">
+    <span>2027 成大電機鳳凰科技教師研習營<small>2027 NCKU EE PHOENIX TECHNOLOGY CAMP</small></span>
+  </a>
+  <button class="menu" aria-label="開啟導覽選單" aria-expanded="false">☰</button>
+  <nav aria-label="主要導覽">
+    <a href="courseintroduce.html">活動介紹</a>
+    <a href="news.html">最新消息</a>
+    <a class="active" href="otherevent.html">同期活動</a>
+    <a class="nav-btn" href="#events">OTHER CAMPS</a>
+  </nav>
+</header>
+<main id="top">
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <canvas id="network-canvas" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="kicker">NCKU · CAMP NETWORK</div>
+        <h1>同期活動</h1>
+        <p>一場營隊，開啟一個領域的探索；多場營隊，串起更多跨域的可能。認識成大同期舉辦的各式營隊，找到最想深入探索的方向。</p>
+        <div class="hero-meta">
+          <span class="meta"><b>EXPLORE</b>跨領域學習</span>
+          <span class="meta"><b>CONNECT</b>交流與探索</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll">SCROLL TO EXPLORE</div>
+  </section>
+
+  <section id="events">
+    <div class="wrap">
+      <div class="heading reveal">
+        <div class="en">MORE CAMPS · MORE POSSIBILITIES</div>
+        <h2>探索成大同期營隊</h2>
+        <p>不同專業領域，帶你看見更多可能</p>
+      </div>
+      <p class="intro reveal">除了鳳凰科技教師研習營，成大同期也有其他精彩活動。以下整理目前預計介紹的營隊，活動簡介與官方連結可依各營隊後續提供的資訊補上。</p>
+      <div class="event-grid">
+        <article class="event-card reveal" data-code="AI">
+          <div class="event-top"><div class="event-icon" aria-hidden="true">⌘</div><div><div class="event-en">AI &amp; OPERATIONS RESEARCH</div><h3>AI 運籌營</h3></div></div>
+          <p>走進人工智慧與運籌研究的世界，認識資料、模型與決策如何協助解決真實問題。</p>
+          <div class="event-foot"><span>人工智慧・最佳化・決策思維</span><span class="status">活動資訊待補</span></div>
+        </article>
+        <article class="event-card reveal" data-code="DC">
+          <div class="event-top"><div class="event-icon" aria-hidden="true">✧</div><div><div class="event-en">DIGITAL CREATIVITY</div><h3>數創營</h3></div></div>
+          <p>結合數位工具與創意思考，從發想到實作，探索科技如何成為創作與表達的媒介。</p>
+          <div class="event-foot"><span>數位應用・創意實作</span><span class="status">活動資訊待補</span></div>
+        </article>
+        <article class="event-card reveal" data-code="ARCH">
+          <div class="event-top"><div class="event-icon" aria-hidden="true">⌂</div><div><div class="event-en">ARCHITECTURE</div><h3>建築營</h3></div></div>
+          <p>從空間觀察、設計思考到建築體驗，認識環境、結構與人的生活之間的連結。</p>
+          <div class="event-foot"><span>空間設計・建築探索</span><span class="status">活動資訊待補</span></div>
+        </article>
+        <article class="event-card reveal" data-code="RES">
+          <div class="event-top"><div class="event-icon" aria-hidden="true">◇</div><div><div class="event-en">RESOURCES ENGINEERING</div><h3>資源營</h3></div></div>
+          <p>探索資源、能源與永續議題，從工程角度理解人類活動與環境之間的關係。</p>
+          <div class="event-foot"><span>資源工程・能源・永續</span><span class="status">活動資訊待補</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+  <section class="bottom"><div class="reveal">
+    <div class="kicker" style="justify-content:center">BACK TO PHOENIX CAMP</div>
+    <h2>從電機出發，連結更多可能</h2>
+    <p>回到鳳凰科技教師研習營，看看我們準備的兩日科技探索旅程。</p>
+    <a class="button" href="index.html">前往鳳凰科技教師研習營 ↗</a>
+  </div></section>
+</main>
+<footer>© 2027 <strong>國立成功大學電機工程學系</strong>｜鳳凰科技教師研習營籌備團隊</footer>
+<script>
+  const menuBtn=document.querySelector('.menu'),nav=document.querySelector('nav');
+  menuBtn.addEventListener('click',()=>{const open=nav.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open));menuBtn.textContent=open?'×':'☰'});
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');menuBtn.textContent='☰'}));
+  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');observer.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  // 以流動光點連結背景中的晶片節點，呈現跨領域營隊彼此串連的意象。
+  (()=>{const c=document.getElementById('network-canvas'),x=c.getContext('2d');const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;let w,h,dpr,pts=[],raf;
+    function resize(){const r=c.getBoundingClientRect();w=r.width;h=r.height;dpr=Math.min(devicePixelRatio||1,2);c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+      pts=Array.from({length:w<650?28:58},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.5,p:Math.random()*6.28}));if(reduced)draw();}
+    function draw(){x.clearRect(0,0,w,h);pts.forEach((p,i)=>{if(!reduced){p.x+=p.vx;p.y+=p.vy;p.p+=.025;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1}
+      for(let j=i+1;j<pts.length;j++){const q=pts[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.hypot(dx,dy);if(dist<105){x.strokeStyle=`rgba(76,231,242,${(1-dist/105)*.16})`;x.lineWidth=.7;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);x.stroke()}}
+      x.globalAlpha=.3+(Math.sin(p.p)+1)*.25;x.fillStyle='#8fffff';x.shadowColor='#39eaff';x.shadowBlur=8;x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();x.globalAlpha=1;});
+    }
+    function loop(){if(document.hidden||reduced)return;draw();raf=requestAnimationFrame(loop)}function start(){cancelAnimationFrame(raf);if(reduced){draw();return}if(!document.hidden)raf=requestAnimationFrame(loop)}
+    addEventListener('resize',()=>{resize();start()});document.addEventListener('visibilitychange',start);resize();start();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於營隊 | 成大電機鳳凰科技營 NCKU EE Phoenix Tech Camp</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Noto Sans TC, Inter 與 Orbitron -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-cyan: #00f2fe;
+            --accent-emerald: #34d399;
+            --deep-navy: #020c18;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            background-color: var(--deep-navy);
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            color: #e6f4f8;
+            overflow-x: hidden;
+        }
+
+        .font-tech {
+            font-family: 'Orbitron', 'Inter', sans-serif;
+        }
+
+        /* 固定背景容器 */
+        #bg-wrapper {
+            position: fixed;
+            inset: -1.5%;
+            width: 103%;
+            height: 103%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #bg-image-layer {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transition: opacity 0.8s ease, transform 0.25s ease-out;
+        }
+
+        /* 備援繪圖層 (當預覽環境尚未載入本地 about_camp_bg.jpg 時自動繪製高還原度水晶八面體與電路板) */
+        #fallback-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        /* 電路板脈動 & 水晶 LOGO 閃耀光影疊加畫布 */
+        #camp-fx-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* 左側微暗角遮罩，確保文字清晰可讀同時不遮擋右側水晶主體 */
+        .vignette-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(
+                90deg,
+                rgba(2, 11, 22, 0.82) 0%,
+                rgba(2, 11, 22, 0.55) 42%,
+                rgba(2, 11, 22, 0.12) 72%,
+                rgba(2, 11, 22, 0.35) 100%
+            );
+        }
+
+        /* 毛玻璃科技介紹主卡片 */
+        .glass-panel {
+            background: linear-gradient(145deg, rgba(6, 24, 42, 0.74) 0%, rgba(3, 13, 26, 0.86) 100%);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(56, 189, 248, 0.26);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.65),
+                0 0 30px rgba(0, 242, 254, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(52, 211, 153, 0.45);
+            box-shadow:
+                0 28px 68px rgba(0, 0, 0, 0.75),
+                0 0 36px rgba(0, 242, 254, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        /* 特色亮點子卡片 */
+        .feature-card {
+            background: rgba(4, 17, 32, 0.62);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .feature-card:hover {
+            background: rgba(8, 30, 52, 0.78);
+            border-color: rgba(52, 211, 153, 0.55);
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.12);
+        }
+
+        /* 導覽按鈕樣式 */
+        .btn-primary-glow {
+            background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-glow:hover {
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.65);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-glass {
+            background: rgba(8, 28, 48, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-glass:hover {
+            background: rgba(14, 45, 74, 0.9);
+            border-color: rgba(0, 242, 254, 0.75);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 0. 備援繪圖層 (未載入本地 about_camp_bg.jpg 時顯示等距水晶八面體與電路板底圖) -->
+    <canvas id="fallback-canvas"></canvas>
+
+    <!-- 1. 背景圖片層 (自動載入 about_camp_bg.jpg) -->
+    <div id="bg-wrapper">
+        <div id="bg-image-layer" style="opacity: 0;"></div>
+    </div>
+
+    <!-- 2. 動態特效畫布 (電路板電線脈動亮暗 + 中央水晶 LOGO 微光影閃耀) -->
+    <canvas id="camp-fx-canvas"></canvas>
+
+    <!-- 3. 景深暗角漸層遮罩 -->
+    <div class="vignette-overlay"></div>
+
+    <!-- 4. 主要內容區：左側毛玻璃科技卡片 -->
+    <main class="relative z-20 w-full min-h-screen flex items-center justify-center lg:justify-start px-4 sm:px-10 lg:px-16 py-10">
+        <section class="w-full max-w-[560px] glass-panel rounded-3xl p-6 sm:p-8 lg:p-9 relative overflow-hidden">
+            <!-- 頂部青綠能量光條 -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-emerald-400 to-transparent opacity-90"></div>
+
+            <!-- 頂部標籤 -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/35 text-cyan-300 text-xs font-medium tracking-wider mb-4">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>NCKU EE PHOENIX TECH CAMP · 關於營隊</span>
+            </div>
+
+            <!-- 主標題與副標題 -->
+            <h1 class="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-white leading-snug">
+                成大電機<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-teal-200 to-emerald-300">鳳凰科技營</span>
+            </h1>
+            <p class="font-tech text-xs sm:text-sm text-emerald-300/90 tracking-widest mt-1.5 font-medium">
+                探索科技前沿 · 點燃創新火種
+            </p>
+
+            <!-- 營隊核心介紹段落 -->
+            <div class="mt-4 space-y-2.5 text-slate-200/90 text-xs sm:text-sm leading-relaxed">
+                <p>
+                    由<strong class="text-cyan-300 font-semibold">國立成功大學電機工程學系</strong>學生團隊精心籌辦，鳳凰科技營專為懷抱科學熱忱的高中職學子打造，帶領學員從基礎電路邏輯跨越至當代前瞻半導體與智慧系統領域。
+                </p>
+                <p>
+                    如同電路板上奔騰的脈衝訊號與晶體核心的璀璨光芒，我們結合紮實理論、動手實作與大學生活體驗，啟發你對電機工程的無限想像。
+                </p>
+            </div>
+
+            <!-- 三大營隊特色亮點 -->
+            <div class="mt-5 space-y-2.5">
+                <!-- 亮點 1 -->
+                <div class="feature-card rounded-2xl p-3.5 flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center shrink-0 text-cyan-300 mt-0.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span>營隊宗旨與前瞻視野</span>
+                            <span class="text-[10px] font-tech px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300">VISION</span>
+                        </h2>
+                        <p class="text-xs text-slate-300/85 mt-1 leading-relaxed">
+                            深入淺出解析 IC 晶片設計、通訊訊號與人工智慧應用，打破課本框架，建立完整的電機工程思維地圖。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 亮點 2 -->
+                <div class="feature-card rounded-2xl p-3.5 flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/35 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span>硬體電路與系統實作</span>
+                            <span class="text-[10px] font-tech px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300">HANDS-ON</span>
+                        </h2>
+                        <p class="text-xs text-slate-300/85 mt-1 leading-relaxed">
+                            親手焊接電子元件、撰寫微控制器程式並完成專題作品，體驗從零到一讓電路成功運作的成就感。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 亮點 3 -->
+                <div class="feature-card rounded-2xl p-3.5 flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-400/35 flex items-center justify-center shrink-0 text-sky-300 mt-0.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span>成大電機教授與學長姐領航</span>
+                            <span class="text-[10px] font-tech px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-300">MENTORSHIP</span>
+                        </h2>
+                        <p class="text-xs text-slate-300/85 mt-1 leading-relaxed">
+                            近距離聆聽成大電機系教授專題演講，並與隊輔學長姐交流升學經驗、實驗室日常與未來職涯方向。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部導覽操作按鈕列 -->
+            <div class="mt-6 pt-5 border-t border-cyan-500/20 flex flex-col sm:flex-row items-center gap-3">
+                <a href="#courses" id="btn-courses"
+                   class="btn-secondary-glass w-full sm:w-1/2 py-3 px-4 rounded-xl text-cyan-200 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer no-underline">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                    <span>探索課程介紹</span>
+                </a>
+
+                <a href="signup.html" id="btn-register"
+                   class="btn-primary-glow w-full sm:w-1/2 py-3 px-4 rounded-xl text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer no-underline">
+                    <span>前往報名專區</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- 互動提示訊息條 -->
+            <div id="nav-toast" class="hidden mt-3.5 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-200 text-xs flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
+                <span id="nav-toast-text">正在準備跳轉至對應頁面...</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        /**
+         * ============================================================================
+         * 成大電機鳳凰科技營 - 電路板脈動亮暗 & 中央水晶 LOGO 微光影閃耀動態引擎
+         * ============================================================================
+         */
+        (function () {
+            const fxCanvas = document.getElementById('camp-fx-canvas');
+            const fxCtx = fxCanvas.getContext('2d');
+
+            const fallbackCanvas = document.getElementById('fallback-canvas');
+            const fbCtx = fallbackCanvas.getContext('2d');
+
+            const bgImageLayer = document.getElementById('bg-image-layer');
+
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            // 鎖定協調、精緻的預設動態參數
+            const state = {
+                hasCustomImage: false,
+                time: 0,
+                mouseX: 0.5,
+                mouseY: 0.5,
+                targetMouseX: 0.5,
+                targetMouseY: 0.5,
+                energyBoost: 1.0 // 點擊導覽按鈕時的短暫能量共鳴倍率
+            };
+
+            // 精準對齊 about_camp_bg.jpg (16:9 構圖比例) 的座標錨點
+            // 依據 object-fit: cover 計算圖片實際在螢幕上的映射位置
+            const IMAGE_ASPECT = 16 / 9;
+            function getMappedAnchor() {
+                const screenAspect = width / height;
+                let renderW, renderH, offsetX, offsetY;
+
+                if (screenAspect > IMAGE_ASPECT) {
+                    renderW = width;
+                    renderH = width / IMAGE_ASPECT;
+                    offsetX = 0;
+                    offsetY = (height - renderH) * 0.5;
+                } else {
+                    renderH = height;
+                    renderW = height * IMAGE_ASPECT;
+                    offsetX = (width - renderW) * 0.5;
+                    offsetY = 0;
+                }
+
+                // 在手機直式螢幕上，適度微調讓水晶主體仍能呈現視覺亮點
+                const isMobilePortrait = width < 768 && height > width;
+                const logoNormX = isMobilePortrait ? 0.62 : 0.645;
+                const logoNormY = isMobilePortrait ? 0.42 : 0.43;
+                const baseNormY = isMobilePortrait ? 0.46 : 0.475;
+
+                return {
+                    renderW,
+                    renderH,
+                    logoX: offsetX + renderW * logoNormX,
+                    logoY: offsetY + renderH * logoNormY,
+                    baseX: offsetX + renderW * logoNormX,
+                    baseY: offsetY + renderH * baseNormY,
+                    scale: Math.min(renderW, renderH) / 1080
+                };
+            }
+
+            // 調整畫布解析度
+            function resizeCanvases() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                fxCanvas.width = width * dpr;
+                fxCanvas.height = height * dpr;
+                fxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                fallbackCanvas.width = width * dpr;
+                fallbackCanvas.height = height * dpr;
+                fbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                if (!state.hasCustomImage) {
+                    drawFallbackScene();
+                }
+            }
+
+            /**
+             * 0. 繪製高還原度備援場景 (等距水晶八面體 + 嵌入式 E 標誌 + 等距 PCB 電路板)
+             */
+            function drawFallbackScene() {
+                const w = width;
+                const h = height;
+                const anchor = getMappedAnchor();
+                const s = anchor.scale;
+
+                fbCtx.clearRect(0, 0, w, h);
+
+                // 深邃海軍藍至右上翠綠微光漸層背景
+                const bgGrad = fbCtx.createRadialGradient(w * 0.86, h * 0.14, 15, w * 0.5, h * 0.5, Math.max(w, h) * 0.95);
+                bgGrad.addColorStop(0, '#166862');
+                bgGrad.addColorStop(0.28, '#083344');
+                bgGrad.addColorStop(0.65, '#04182b');
+                bgGrad.addColorStop(1, '#020a14');
+                fbCtx.fillStyle = bgGrad;
+                fbCtx.fillRect(0, 0, w, h);
+
+                // 等距 PCB 電路板靜態走線底紋 (±30度等距投影)
+                const bx = anchor.baseX;
+                const by = anchor.baseY + 95 * s;
+                const cos30 = Math.cos(Math.PI / 6);
+                const sin30 = Math.sin(Math.PI / 6);
+
+                fbCtx.save();
+                fbCtx.strokeStyle = 'rgba(34, 211, 238, 0.22)';
+                fbCtx.lineWidth = 1.6 * s;
+
+                // 四個象限放射的等距電路走線
+                const dirs = [
+                    { dx: -cos30, dy: sin30 },   // 左下
+                    { dx: cos30, dy: sin30 },    // 右下
+                    { dx: -cos30, dy: -sin30 },  // 左上
+                    { dx: cos30, dy: -sin30 }    // 右上
+                ];
+
+                dirs.forEach((d, dirIdx) => {
+                    for (let i = -5; i <= 5; i++) {
+                        const perpX = -d.dy * i * 16 * s;
+                        const perpY = d.dx * i * 16 * s;
+                        const startX = bx + d.dx * 115 * s + perpX;
+                        const startY = by + d.dy * 115 * s + perpY;
+                        const len1 = (95 + Math.abs(i) * 28) * s;
+                        const midX = startX + d.dx * len1;
+                        const midY = startY + d.dy * len1;
+
+                        // 45度折角延伸
+                        const bendDir = (i % 2 === 0) ? 1 : -1;
+                        const endX = midX + (d.dx * 0.85 - d.dy * 0.45 * bendDir) * 90 * s;
+                        const endY = midY + (d.dy * 0.85 + d.dx * 0.45 * bendDir) * 90 * s;
+
+                        fbCtx.beginPath();
+                        fbCtx.moveTo(startX, startY);
+                        fbCtx.lineTo(midX, midY);
+                        fbCtx.lineTo(endX, endY);
+                        fbCtx.stroke();
+
+                        // 焊點圓圈
+                        fbCtx.beginPath();
+                        fbCtx.arc(endX, endY, 2.5 * s, 0, Math.PI * 2);
+                        fbCtx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+                        fbCtx.fill();
+                    }
+                });
+
+                // 晶片插槽底座 (等距菱形)
+                const sockW = 195 * s;
+                const sockH = 112 * s;
+                fbCtx.beginPath();
+                fbCtx.moveTo(bx, by - sockH);
+                fbCtx.lineTo(bx + sockW, by);
+                fbCtx.lineTo(bx, by + sockH);
+                fbCtx.lineTo(bx - sockW, by);
+                fbCtx.closePath();
+                fbCtx.fillStyle = '#041222';
+                fbCtx.fill();
+                fbCtx.lineWidth = 2.5 * s;
+                fbCtx.strokeStyle = '#22d3ee';
+                fbCtx.stroke();
+                fbCtx.restore();
+
+                // 中央水晶八面體 (Isometric Crystal Octahedron)
+                const cx = anchor.logoX;
+                const cy = anchor.logoY;
+                const rx = 148 * s;
+                const ry = 85 * s;
+                const topY = cy - 175 * s;
+                const botY = cy + 165 * s;
+
+                fbCtx.save();
+                // 水晶各個晶面漸層
+                const facets = [
+                    { pts: [[cx, topY], [cx - rx, cy - ry * 0.45], [cx, cy + ry * 0.35]], c1: '#38bdf8', c2: '#0284c7' },
+                    { pts: [[cx, topY], [cx + rx, cy - ry * 0.45], [cx, cy + ry * 0.35]], c1: '#6ee7b7', c2: '#0d9488' },
+                    { pts: [[cx, botY], [cx - rx, cy - ry * 0.45], [cx, cy + ry * 0.35]], c1: '#0369a1', c2: '#082f49' },
+                    { pts: [[cx, botY], [cx + rx, cy - ry * 0.45], [cx, cy + ry * 0.35]], c1: '#2dd4bf', c2: '#0f766e' }
+                ];
+
+                facets.forEach(f => {
+                    const grad = fbCtx.createLinearGradient(f.pts[0][0], f.pts[0][1], f.pts[2][0], f.pts[2][1]);
+                    grad.addColorStop(0, f.c1);
+                    grad.addColorStop(1, f.c2);
+                    fbCtx.beginPath();
+                    fbCtx.moveTo(f.pts[0][0], f.pts[0][1]);
+                    fbCtx.lineTo(f.pts[1][0], f.pts[1][1]);
+                    fbCtx.lineTo(f.pts[2][0], f.pts[2][1]);
+                    fbCtx.closePath();
+                    fbCtx.fillStyle = grad;
+                    fbCtx.globalAlpha = 0.78;
+                    fbCtx.fill();
+                    fbCtx.strokeStyle = 'rgba(186, 230, 253, 0.75)';
+                    fbCtx.lineWidth = 1.5 * s;
+                    fbCtx.stroke();
+                });
+
+                // 嵌入式六角幾何 E 標誌
+                fbCtx.globalAlpha = 1;
+                const lr = 56 * s;
+                fbCtx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const ang = (i * Math.PI) / 3 - Math.PI / 2;
+                    const px = cx + Math.cos(ang) * lr * 0.88;
+                    const py = cy + Math.sin(ang) * lr;
+                    if (i === 0) fbCtx.moveTo(px, py);
+                    else fbCtx.lineTo(px, py);
+                }
+                fbCtx.closePath();
+                fbCtx.fillStyle = '#0f2942';
+                fbCtx.fill();
+                fbCtx.lineWidth = 3 * s;
+                fbCtx.strokeStyle = '#6ee7b7';
+                fbCtx.stroke();
+
+                // E 字中橫槓
+                fbCtx.fillStyle = '#5eead4';
+                fbCtx.fillRect(cx - 8 * s, cy - 8 * s, 42 * s, 16 * s);
+                fbCtx.restore();
+            }
+
+            /**
+             * ============================================================================
+             * 1. 電路板電線脈動亮暗變化系統 (Pulsing PCB Circuit Traces & Current Packets)
+             * ============================================================================
+             */
+            const circuitTraces = [];
+            const TRACE_COUNT = 34;
+
+            function initCircuitTraces() {
+                circuitTraces.length = 0;
+                const cos30 = Math.cos(Math.PI / 6);
+                const sin30 = Math.sin(Math.PI / 6);
+
+                // 四個主要等距方向（對應圖片右下、左下、左上、右上的電路排線）
+                const branches = [
+                    { dx: -cos30, dy: sin30, weight: 0.36 },  // 左下密集排線區
+                    { dx: cos30, dy: sin30, weight: 0.32 },   // 右下密集排線區
+                    { dx: -cos30, dy: -sin30, weight: 0.16 }, // 左上排線區
+                    { dx: cos30, dy: -sin30, weight: 0.16 }   // 右上排線區
+                ];
+
+                for (let i = 0; i < TRACE_COUNT; i++) {
+                    // 依權重選擇象限
+                    const r = Math.random();
+                    let acc = 0;
+                    let branch = branches[0];
+                    for (const b of branches) {
+                        acc += b.weight;
+                        if (r <= acc) {
+                            branch = b;
+                            break;
+                        }
+                    }
+
+                    // 平行排線的橫向偏移
+                    const laneOffset = (Math.random() - 0.5) * 185;
+                    const startDist = 105 + Math.random() * 25;
+                    const seg1Len = 75 + Math.random() * 145;
+                    const seg2Len = 65 + Math.random() * 130;
+                    const bendSign = Math.random() > 0.5 ? 1 : -1;
+
+                    circuitTraces.push({
+                        dx: branch.dx,
+                        dy: branch.dy,
+                        laneOffset,
+                        startDist,
+                        seg1Len,
+                        seg2Len,
+                        bendSign,
+                        // 脈動亮暗相位與頻率
+                        breathFreq: 1.4 + Math.random() * 1.8,
+                        breathPhase: Math.random() * Math.PI * 2,
+                        // 電流光點移動速度與進度
+                        pulseSpeed: 0.28 + Math.random() * 0.42,
+                        pulseProgress: Math.random(),
+                        outward: Math.random() > 0.25, // 大部分向外傳輸，部分回傳晶片
+                        isEmerald: Math.random() > 0.55
+                    });
+                }
+            }
+
+            /**
+             * 繪製電路板電線的脈動亮暗與流動光脈衝
+             */
+            function drawPulsingCircuits(ctx, anchor, dt, t) {
+                const bx = anchor.baseX;
+                const by = anchor.baseY + 95 * anchor.scale;
+                const s = anchor.scale;
+
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                // 1. 晶片插槽底座邊框的呼吸脈動亮暗
+                const socketPulse = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * 2.2));
+                const sockW = 192 * s;
+                const sockH = 110 * s;
+
+                ctx.beginPath();
+                ctx.moveTo(bx, by - sockH);
+                ctx.lineTo(bx + sockW, by);
+                ctx.lineTo(bx, by + sockH);
+                ctx.lineTo(bx - sockW, by);
+                ctx.closePath();
+
+                ctx.strokeStyle = `rgba(34, 211, 238, ${0.22 + socketPulse * 0.35 * state.energyBoost})`;
+                ctx.lineWidth = 2.4 * s;
+                ctx.shadowColor = 'rgba(0, 242, 254, 0.75)';
+                ctx.shadowBlur = 12 * socketPulse;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // 2. 逐條繪製等距電路走線的亮暗脈動與電流光包
+                circuitTraces.forEach(tr => {
+                    const perpX = -tr.dy * tr.laneOffset * s;
+                    const perpY = tr.dx * tr.laneOffset * s;
+
+                    const p0x = bx + tr.dx * tr.startDist * s + perpX;
+                    const p0y = by + tr.dy * tr.startDist * s + perpY;
+
+                    const p1x = p0x + tr.dx * tr.seg1Len * s;
+                    const p1y = p0y + tr.dy * tr.seg1Len * s;
+
+                    // 等距轉折方向
+                    const dir2X = tr.dx * 0.86 - tr.dy * 0.5 * tr.bendSign;
+                    const dir2Y = tr.dy * 0.86 + tr.dx * 0.5 * tr.bendSign;
+                    const p2x = p1x + dir2X * tr.seg2Len * s;
+                    const p2y = p1y + dir2Y * tr.seg2Len * s;
+
+                    // 整條電線的亮暗呼吸變化 (0.04 ~ 0.38 透明度循環)
+                    const breath = 0.5 + 0.5 * Math.sin(t * tr.breathFreq + tr.breathPhase);
+                    const lineAlpha = (0.04 + Math.pow(breath, 1.8) * 0.32) * state.energyBoost;
+
+                    const baseColor = tr.isEmerald
+                        ? `rgba(52, 211, 153, ${lineAlpha})`
+                        : `rgba(34, 211, 238, ${lineAlpha})`;
+
+                    ctx.beginPath();
+                    ctx.moveTo(p0x, p0y);
+                    ctx.lineTo(p1x, p1y);
+                    ctx.lineTo(p2x, p2y);
+                    ctx.strokeStyle = baseColor;
+                    ctx.lineWidth = 1.6 * s;
+                    ctx.stroke();
+
+                    // 電流脈衝光點沿折線路徑行進
+                    tr.pulseProgress += tr.pulseSpeed * dt * state.energyBoost;
+                    if (tr.pulseProgress > 1) {
+                        tr.pulseProgress -= 1;
+                    }
+
+                    const prog = tr.outward ? tr.pulseProgress : (1 - tr.pulseProgress);
+                    const totalLen = tr.seg1Len + tr.seg2Len;
+                    const curDist = prog * totalLen;
+
+                    let curX, curY;
+                    if (curDist <= tr.seg1Len) {
+                        const r = curDist / tr.seg1Len;
+                        curX = p0x + (p1x - p0x) * r;
+                        curY = p0y + (p1y - p0y) * r;
+                    } else {
+                        const r = (curDist - tr.seg1Len) / tr.seg2Len;
+                        curX = p1x + (p2x - p1x) * r;
+                        curY = p1y + (p2y - p1y) * r;
+                    }
+
+                    // 頭尾淡入淡出
+                    const fade = Math.sin(prog * Math.PI);
+                    const glowRadius = 5.5 * s;
+                    const pGrad = ctx.createRadialGradient(curX, curY, 0, curX, curY, glowRadius);
+                    if (tr.isEmerald) {
+                        pGrad.addColorStop(0, `rgba(236, 253, 245, ${0.9 * fade})`);
+                        pGrad.addColorStop(0.45, `rgba(52, 211, 153, ${0.65 * fade})`);
+                        pGrad.addColorStop(1, 'rgba(52, 211, 153, 0)');
+                    } else {
+                        pGrad.addColorStop(0, `rgba(240, 249, 255, ${0.9 * fade})`);
+                        pGrad.addColorStop(0.45, `rgba(0, 242, 254, ${0.65 * fade})`);
+                        pGrad.addColorStop(1, 'rgba(0, 242, 254, 0)');
+                    }
+
+                    ctx.fillStyle = pGrad;
+                    ctx.beginPath();
+                    ctx.arc(curX, curY, glowRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // 端點焊盤微亮閃爍
+                    if (breath > 0.72) {
+                        const nodeAlpha = ((breath - 0.72) / 0.28) * 0.65;
+                        ctx.beginPath();
+                        ctx.arc(p2x, p2y, 2.6 * s, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(165, 243, 252, ${nodeAlpha})`;
+                        ctx.fill();
+                    }
+                });
+
+                ctx.restore();
+            }
+
+            /**
+             * ============================================================================
+             * 2. 中央水晶 LOGO 微光影變化閃耀系統 (Crystal Octahedron & Logo Shimmer)
+             * ============================================================================
+             */
+            const crystalSparkles = [];
+            const SPARKLE_COUNT = 22;
+
+            function initCrystalSparkles() {
+                crystalSparkles.length = 0;
+                for (let i = 0; i < SPARKLE_COUNT; i++) {
+                    crystalSparkles.push({
+                        angle: Math.random() * Math.PI * 2,
+                        distRatio: 0.15 + Math.random() * 0.95,
+                        twinkleSpeed: 1.5 + Math.random() * 2.5,
+                        twinklePhase: Math.random() * Math.PI * 2,
+                        maxSize: 2.2 + Math.random() * 3.8,
+                        driftSpeed: (Math.random() - 0.5) * 0.25
+                    });
+                }
+            }
+
+            function drawCrystalLogoShimmer(ctx, anchor, dt, t) {
+                const cx = anchor.logoX;
+                const cy = anchor.logoY;
+                const s = anchor.scale;
+
+                ctx.save();
+
+                // 1. 柔和呼吸環境光暈 (青藍與翠綠雙色交替微光)
+                const breathA = 0.5 + 0.5 * Math.sin(t * 1.6);
+                const breathB = 0.5 + 0.5 * Math.cos(t * 1.2 + 0.8);
+
+                const outerRadius = 215 * s;
+                const ambientGrad = ctx.createRadialGradient(cx, cy, 8 * s, cx, cy, outerRadius);
+                ambientGrad.addColorStop(0, `rgba(224, 242, 254, ${(0.22 + breathA * 0.18) * state.energyBoost})`);
+                ambientGrad.addColorStop(0.35, `rgba(45, 212, 191, ${(0.14 + breathB * 0.14) * state.energyBoost})`);
+                ambientGrad.addColorStop(0.7, `rgba(14, 165, 233, ${0.06 + breathA * 0.06})`);
+                ambientGrad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+
+                ctx.fillStyle = ambientGrad;
+                ctx.beginPath();
+                ctx.arc(cx, cy, outerRadius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 2. 棱鏡鏡面斜向掃光 (Diagonal Specular Light Sweep)
+                // 每隔約 4.5 秒有一道柔和的晶體反光斜向掠過八面體與 E 字 LOGO
+                const sweepCycle = (t * 0.22) % 1; // 0 -> 1
+                const crystalRx = 148 * s;
+                const crystalRy = 175 * s;
+
+                // 限定掃光裁剪區域在水晶八面體輪廓內
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - crystalRy);
+                ctx.lineTo(cx + crystalRx, cy - 35 * s);
+                ctx.lineTo(cx, cy + crystalRy * 0.92);
+                ctx.lineTo(cx - crystalRx, cy - 35 * s);
+                ctx.closePath();
+                ctx.clip();
+
+                // 掃光帶位移計算
+                const sweepOffset = (sweepCycle * 2.4 - 1.2) * (crystalRx + crystalRy);
+                ctx.translate(cx, cy);
+                ctx.rotate(-0.55); // 約 -31 度斜角貼合晶面
+
+                const sweepGrad = ctx.createLinearGradient(sweepOffset - 55 * s, 0, sweepOffset + 55 * s, 0);
+                sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+                sweepGrad.addColorStop(0.45, `rgba(186, 230, 253, ${0.26 * state.energyBoost})`);
+                sweepGrad.addColorStop(0.5, `rgba(255, 255, 255, ${0.48 * state.energyBoost})`);
+                sweepGrad.addColorStop(0.55, `rgba(167, 243, 208, ${0.26 * state.energyBoost})`);
+                sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.fillStyle = sweepGrad;
+                ctx.fillRect(-300 * s, -300 * s, 600 * s, 600 * s);
+                ctx.restore();
+
+                // 3. 水晶棱線微光折射 (Crystal Facet Edge Glints)
+                const edgeShimmer = 0.35 + 0.65 * Math.pow(0.5 + 0.5 * Math.sin(t * 2.4), 2);
+                ctx.strokeStyle = `rgba(186, 230, 253, ${0.14 + edgeShimmer * 0.24})`;
+                ctx.lineWidth = 1.5 * s;
+                ctx.beginPath();
+                // 垂直主棱線
+                ctx.moveTo(cx, cy - crystalRy);
+                ctx.lineTo(cx, cy + crystalRy * 0.92);
+                // 橫向中腰棱線
+                ctx.moveTo(cx - crystalRx, cy - 35 * s);
+                ctx.lineTo(cx, cy + 28 * s);
+                ctx.lineTo(cx + crystalRx, cy - 35 * s);
+                ctx.stroke();
+
+                // 4. 水晶周圍與表面微星芒閃爍 (Micro Starlight Sparkles)
+                crystalSparkles.forEach(sp => {
+                    sp.angle += sp.driftSpeed * dt;
+                    const sx = cx + Math.cos(sp.angle) * (155 * s * sp.distRatio);
+                    const sy = cy + Math.sin(sp.angle) * (165 * s * sp.distRatio);
+
+                    const twinkle = Math.max(0, Math.sin(t * sp.twinkleSpeed + sp.twinklePhase));
+                    const intensity = Math.pow(twinkle, 3); // 銳利的閃耀峰值
+
+                    if (intensity > 0.05) {
+                        const starR = sp.maxSize * s * (0.4 + intensity * 0.8);
+                        ctx.save();
+                        ctx.translate(sx, sy);
+                        ctx.fillStyle = `rgba(240, 253, 250, ${intensity * 0.9})`;
+
+                        // 十字星芒形狀
+                        ctx.beginPath();
+                        ctx.moveTo(0, -starR * 2.2);
+                        ctx.quadraticCurveTo(0, 0, starR * 2.2, 0);
+                        ctx.quadraticCurveTo(0, 0, 0, starR * 2.2);
+                        ctx.quadraticCurveTo(0, 0, -starR * 2.2, 0);
+                        ctx.quadraticCurveTo(0, 0, 0, -starR * 2.2);
+                        ctx.fill();
+
+                        // 中心亮點
+                        ctx.beginPath();
+                        ctx.arc(0, 0, starR * 0.45, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 255, 255, ${intensity})`;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                });
+
+                ctx.restore();
+            }
+
+            // 主動畫迴圈
+            let lastTime = performance.now();
+            function animate(now) {
+                const dt = Math.min((now - lastTime) / 1000, 0.05);
+                lastTime = now;
+                state.time += dt;
+
+                // 平滑滑鼠視差微動
+                state.mouseX += (state.targetMouseX - state.mouseX) * 0.06;
+                state.mouseY += (state.targetMouseY - state.mouseY) * 0.06;
+
+                const parallaxX = (state.mouseX - 0.5) * -14;
+                const parallaxY = (state.mouseY - 0.5) * -10;
+
+                bgImageLayer.style.transform = `translate3d(${parallaxX * 0.6}px, ${parallaxY * 0.6}px, 0)`;
+
+                fxCtx.clearRect(0, 0, width, height);
+
+                const anchor = getMappedAnchor();
+                anchor.logoX += parallaxX;
+                anchor.logoY += parallaxY;
+                anchor.baseX += parallaxX;
+                anchor.baseY += parallaxY;
+
+                // 依序繪製：電路板電線脈動亮暗 -> 中央水晶 LOGO 微光影閃耀
+                drawPulsingCircuits(fxCtx, anchor, dt, state.time);
+                drawCrystalLogoShimmer(fxCtx, anchor, dt, state.time);
+
+                requestAnimationFrame(animate);
+            }
+
+            /**
+             * 自動嘗試載入同目錄下的 about_camp_bg.jpg
+             */
+            function tryLoadBackgroundImage() {
+                const img = new Image();
+                img.onload = function () {
+                    bgImageLayer.style.backgroundImage = `url('about_camp_bg.jpg')`;
+                    bgImageLayer.style.opacity = '1';
+                    fallbackCanvas.style.opacity = '0';
+                    state.hasCustomImage = true;
+                };
+                img.onerror = function () {
+                    state.hasCustomImage = false;
+                };
+                img.src = 'about_camp_bg.jpg';
+            }
+
+            /**
+             * 綁定視窗縮放、視差與按鈕互動事件
+             */
+            function bindEvents() {
+                window.addEventListener('resize', resizeCanvases);
+
+                window.addEventListener('mousemove', (e) => {
+                    state.targetMouseX = e.clientX / width;
+                    state.targetMouseY = e.clientY / height;
+                });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        state.targetMouseX = e.touches[0].clientX / width;
+                        state.targetMouseY = e.touches[0].clientY / height;
+                    }
+                }, { passive: true });
+
+                const toast = document.getElementById('nav-toast');
+                const toastText = document.getElementById('nav-toast-text');
+
+                function triggerEnergyPulse(msg) {
+                    toastText.textContent = msg;
+                    toast.classList.remove('hidden');
+                    state.energyBoost = 1.65;
+                    setTimeout(() => {
+                        state.energyBoost = 1.0;
+                    }, 950);
+                }
+
+                document.getElementById('btn-courses').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    triggerEnergyPulse('已啟動「課程介紹」導覽通道（可於 href 連結至課程介紹頁面）');
+                });
+
+                document.getElementById('btn-register').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    triggerEnergyPulse('已啟動「報名專區」傳送門（可於 href 連結至報名網頁）');
+                });
+            }
+
+            window.addEventListener('load', () => {
+                resizeCanvases();
+                initCircuitTraces();
+                initCrystalSparkles();
+                tryLoadBackgroundImage();
+                bindEvents();
+                requestAnimationFrame(animate);
+            });
+        })();
+    </script>
+</body>
+</html>

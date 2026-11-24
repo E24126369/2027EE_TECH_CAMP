@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041321">
+  <meta name="description" content="2027 成大電機鳳凰科技教師研習營，探索電機科技、體驗實作課程、走進研究實驗室。">
+  <title>2027 成大電機鳳凰科技教師研習營</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #041321;
+      --bg-deep: #020b15;
+      --panel: rgba(8, 31, 48, .78);
+      --panel-strong: rgba(9, 39, 58, .94);
+      --cyan: #45f3f3;
+      --cyan-soft: #9afcff;
+      --teal: #00b9c8;
+      --text: #eafcff;
+      --muted: #a0bdca;
+      --line: rgba(69, 243, 243, .22);
+      --glow: 0 0 28px rgba(0, 220, 235, .13);
+      --max: 1160px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      margin: 0; color: var(--text); background: var(--bg);
+      font-family: "Noto Sans TC", sans-serif; line-height: 1.75;
+      overflow-x: hidden;
+      background-image: radial-gradient(ellipse at 78% 12%, rgba(0, 174, 190, .12), transparent 38%),
+                        radial-gradient(ellipse at 8% 65%, rgba(0, 113, 160, .12), transparent 40%);
+    }
+    a { color: inherit; }
+    .topbar {
+      position: fixed; inset: 0 0 auto; z-index: 20; height: 76px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 max(5vw, calc((100vw - var(--max))/2));
+      background: rgba(2, 12, 22, .78); border-bottom: 1px solid rgba(69,243,243,.15);
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; letter-spacing: .04em; }
+    .brand-mark { width: 46px; height: 46px; flex: 0 0 46px; display:grid; place-items:center; border-radius: 10px; background: linear-gradient(145deg, rgba(43,190,230,.13), rgba(39,231,180,.07)); border: 1px solid rgba(111,244,250,.38); box-shadow: 0 0 20px rgba(69,243,243,.18), inset 0 0 14px rgba(69,243,243,.08); overflow:hidden; }
+    .brand-mark img { display:block; width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 0 5px rgba(69,243,243,.35)); }
+    .brand small { display:block; color:var(--muted); font: 500 10px "Barlow Condensed",sans-serif; letter-spacing:.2em; }
+    .nav { display:flex; align-items:center; gap: clamp(14px,2.5vw,32px); }
+    .nav a { text-decoration:none; color:#c8e2e9; font-size:13px; transition:color .2s; }
+    .nav a:hover { color:var(--cyan); }
+    .nav .nav-cta { padding:9px 16px; border:1px solid rgba(69,243,243,.55); border-radius:3px; color:var(--cyan); }
+    .menu-toggle { display:none; border:1px solid var(--line); background:transparent; color:var(--cyan); padding:7px 11px; border-radius:4px; font-size:20px; }
+    .hero {
+      min-height: 760px; height: min(900px, 100svh); position:relative; display:flex; align-items:center;
+      overflow:hidden; isolation:isolate; padding: 110px 7vw 70px;
+      background:#031421;
+    }
+    .hero-bg { position:absolute; inset:0; z-index:-3; background-image:url("courseintroduce_bg.jpg"); background-size:cover; background-position:left center; opacity:.88; }
+    .hero-shade { position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,rgba(2,14,25,.08) 0%,rgba(2,14,25,.24) 38%,rgba(2,14,25,.88) 69%,#041321 100%),linear-gradient(0deg,#041321 0%,transparent 25%,rgba(2,13,23,.1) 100%); }
+    #sparkles { position:absolute; inset:0; z-index:-1; width:100%; height:100%; pointer-events:none; }
+    .hero-inner { width:min(var(--max),100%); margin:0 auto; display:flex; justify-content:flex-end; }
+    .hero-copy { width:min(560px,52%); padding:clamp(26px,4vw,48px); border:1px solid rgba(95,246,249,.3); background:rgba(3,19,32,.57); backdrop-filter:blur(10px); box-shadow:0 0 55px rgba(0,223,232,.12), inset 0 0 35px rgba(0,202,220,.035); position:relative; }
+    .hero-copy:before,.hero-copy:after { content:""; position:absolute; width:24px;height:24px;border-color:var(--cyan); }
+    .hero-copy:before { top:-1px;left:-1px;border-top:2px solid;border-left:2px solid; }
+    .hero-copy:after { right:-1px;bottom:-1px;border-right:2px solid;border-bottom:2px solid; }
+    .eyebrow { color:var(--cyan); font:600 14px "Barlow Condensed",sans-serif; letter-spacing:.23em; text-transform:uppercase; display:flex; align-items:center; gap:12px; }
+    .eyebrow:before { content:""; width:34px; height:1px; background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+    .year { margin:23px 0 0; color:var(--cyan-soft); font:600 clamp(26px,3vw,38px) "Barlow Condensed",sans-serif; letter-spacing:.12em; }
+    h1 { margin:5px 0 18px; font-size:clamp(34px,4.2vw,58px); line-height:1.25; letter-spacing:.04em; font-weight:800; background:linear-gradient(100deg,#fff 12%,#a0fbff 72%,#42dbe7); color:transparent; background-clip:text; -webkit-background-clip:text; }
+    .hero-desc { color:#c0d9e2; font-size:15px; line-height:2; margin:0 0 28px; }
+    .hero-meta { display:grid; grid-template-columns:1fr 1fr; gap:18px; padding-top:22px; border-top:1px solid rgba(255,255,255,.15); }
+    .meta-label { display:block; color:var(--cyan); font-size:11px; letter-spacing:.16em; margin-bottom:4px; }
+    .meta-value { font-size:14px; color:#f0fcff; }
+    .hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 20px; text-decoration:none; font-size:13px; letter-spacing:.06em; transition:.25s; }
+    .btn-primary { background:var(--cyan); color:#03202b; font-weight:800; box-shadow:0 0 20px rgba(69,243,243,.2); }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 0 30px rgba(69,243,243,.45); }
+    .btn-ghost { border:1px solid rgba(173,245,248,.4); color:#d8faff; }
+    .btn-ghost:hover { border-color:var(--cyan); color:var(--cyan); }
+    .scroll-hint { position:absolute; left:50%; bottom:24px; transform:translateX(-50%); color:#8bb7c5; font:12px "Barlow Condensed",sans-serif; letter-spacing:.2em; display:flex; align-items:center; gap:12px; }
+    .scroll-hint:after { content:""; width:48px; height:1px; background:var(--cyan); opacity:.7; }
+    section { position:relative; }
+    .section-wrap { width:min(var(--max),calc(100% - 48px)); margin:0 auto; padding:108px 0; }
+    .section-head { text-align:center; margin-bottom:52px; }
+    .section-kicker { color:var(--cyan); font:600 13px "Barlow Condensed",sans-serif; letter-spacing:.25em; }
+    .section-head h2 { margin:8px 0 10px; font-size:clamp(27px,3vw,38px); letter-spacing:.06em; }
+    .section-head p { color:var(--muted); margin:0; font-size:14px; }
+    .section-head .rule { width:54px; height:2px; margin:20px auto 0; background:var(--cyan); box-shadow:0 0 12px var(--cyan); }
+    .intro-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .feature { min-height:230px; padding:28px 27px; position:relative; overflow:hidden; background:linear-gradient(145deg,rgba(11,44,62,.82),rgba(5,24,39,.78)); border:1px solid var(--line); transition:transform .3s,border-color .3s,box-shadow .3s; }
+    .feature:hover { transform:translateY(-7px); border-color:rgba(69,243,243,.7); box-shadow:var(--glow); }
+    .feature-num { color:rgba(69,243,243,.22); font:700 48px "Barlow Condensed",sans-serif; position:absolute; right:18px; top:8px; }
+    .feature-icon { width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(69,243,243,.45);color:var(--cyan);font-size:21px;margin-bottom:22px; }
+    .feature h3 { margin:0 0 10px; font-size:18px; color:#e9feff; }
+    .feature p { color:var(--muted); font-size:13px; line-height:1.9; margin:0; }
+    .agenda { background:linear-gradient(180deg,rgba(1,12,22,.1),rgba(0,8,17,.55)); border-top:1px solid rgba(69,243,243,.08); border-bottom:1px solid rgba(69,243,243,.08); }
+    .day { margin:0 0 62px; }
+    .day:last-child { margin-bottom:0; }
+    .day-heading { display:flex; align-items:center; gap:20px; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .day-label { padding:7px 14px; background:linear-gradient(110deg,#00aebb,#0873a4); color:white; font:700 14px "Barlow Condensed",sans-serif; letter-spacing:.1em; }
+    .day-heading h3 { margin:0; font-size:21px; }
+    .day-heading p { margin:0 0 0 auto; color:var(--muted); font-size:13px; }
+    .timeline { position:relative; margin-left:8px; padding-left:34px; }
+    .timeline:before { content:""; position:absolute; left:5px; top:10px; bottom:12px; width:1px; background:linear-gradient(var(--cyan),rgba(69,243,243,.08)); }
+    .event { position:relative; display:grid; grid-template-columns:160px 1fr; gap:22px; padding:0 0 22px; margin-bottom:22px; }
+    .event:before { content:""; position:absolute; left:-34px; top:8px; width:11px;height:11px;border-radius:50%;background:#052333;border:2px solid var(--cyan);box-shadow:0 0 12px rgba(69,243,243,.7); }
+    .event-time { color:var(--cyan); font:600 17px "Barlow Condensed",sans-serif; letter-spacing:.04em; padding-top:3px; white-space:nowrap; }
+    .event-card { padding:19px 23px; border:1px solid rgba(69,243,243,.15); background:var(--panel); transition:.25s; }
+    .event-card:hover { border-color:rgba(69,243,243,.55); background:var(--panel-strong); box-shadow:var(--glow); transform:translateX(4px); }
+    .event-title { margin:0 0 6px; font-size:17px; font-weight:700; color:#f0feff; }
+    .event-desc { margin:0; color:var(--muted); font-size:13px; line-height:1.9; }
+    .event-note { display:inline-block; margin-top:9px; padding:3px 9px; border:1px solid rgba(69,243,243,.22); color:#9deef0; font-size:11px; }
+    .event.break .event-card { background:rgba(6,20,31,.55); border-style:dashed; }
+    .event.break:before { background:#173448; border-color:#7ca9b8; box-shadow:none; }
+    .event.break .event-time { color:#9ab7c1; }
+    .closing { text-align:center; padding:80px 24px; background:radial-gradient(ellipse at center,rgba(0,157,174,.14),transparent 65%); }
+    .closing h2 { margin:0 0 12px; font-size:clamp(25px,3vw,36px); }
+    .closing p { color:var(--muted); margin:0 auto 25px; max-width:620px; font-size:14px; }
+    footer { padding:28px 24px; text-align:center; background:#020a12; border-top:1px solid rgba(69,243,243,.14); color:#7697a5; font-size:12px; }
+    footer strong { color:#b9e9ed; font-weight:600; }
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    @media (max-width:850px) {
+      .hero { min-height:720px; height:auto; }
+      .hero-copy { width:min(570px,70%); }
+      .intro-grid { grid-template-columns:1fr 1fr; }
+      .event { grid-template-columns:125px 1fr; gap:15px; }
+    }
+    @media (max-width:620px) {
+      .topbar { height:66px; padding:0 20px; }
+      .brand { font-size:13px; }
+      .brand small { font-size:9px; }
+      .menu-toggle { display:block; }
+      .nav { display:none; position:absolute; top:65px; left:0; right:0; padding:18px 22px 22px; background:rgba(2,12,22,.97); border-bottom:1px solid var(--line); flex-direction:column; align-items:stretch; gap:14px; }
+      .nav.open { display:flex; }
+      .nav a { padding:5px 0; }
+      .nav .nav-cta { text-align:center; }
+      .hero { min-height:760px; padding:100px 20px 70px; align-items:flex-end; }
+      .hero-bg { background-position:30% center; opacity:.75; }
+      .hero-shade { background:linear-gradient(0deg,rgba(2,14,25,.97) 0%,rgba(2,14,25,.78) 48%,rgba(2,14,25,.12) 100%); }
+      .hero-inner { justify-content:center; }
+      .hero-copy { width:100%; padding:25px 22px; background:rgba(3,19,32,.72); }
+      .hero-desc { font-size:13px; }
+      .hero-meta { gap:12px; }
+      .meta-value { font-size:12px; }
+      .section-wrap { width:calc(100% - 36px); padding:78px 0; }
+      .section-head { margin-bottom:36px; }
+      .intro-grid { grid-template-columns:1fr; gap:12px; }
+      .feature { min-height:0; padding:23px; }
+      .day-heading { flex-wrap:wrap; gap:12px; }
+      .day-heading p { width:100%; margin:0; }
+      .timeline { padding-left:25px; }
+      .timeline:before { left:4px; }
+      .event { display:block; padding-bottom:17px; margin-bottom:17px; }
+      .event:before { left:-26px; }
+      .event-time { font-size:16px; margin-bottom:7px; }
+      .event-card { padding:16px 17px; }
+      .event-title { font-size:16px; }
+      .event-desc { font-size:12px; }
+      .scroll-hint { display:none; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; }
+      .reveal { opacity:1; transform:none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="回到首頁">
+      <span class="brand-mark"><img object-fit src="2027ee_techcamp_LOGO.jpg" alt="鳳凰科技方塊標誌"></span>
+      <span>2027 成大電機鳳凰科技教師研習營<small>2027 NCKU EE PHOENIX TECHNOLOGY CAMP</small></span>
+    </a>
+    <button class="menu-toggle" aria-label="開啟導覽選單" aria-expanded="false">☰</button>
+    <nav class="nav" aria-label="主要導覽">
+      <a href="#highlights">營隊亮點</a>
+      <a href="#day1">1/28 活動流程</a>
+      <a href="#day2">1/29 活動流程</a>
+      <a class="nav-cta" href="#agenda">探索完整流程 ↘</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <canvas id="sparkles" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">NCKU · DEPARTMENT OF ELECTRICAL ENGINEERING</div>
+          <p class="year">2027 / 01.28 — 01.29</p>
+          <h1>成大電機<br>鳳凰科技教師研習營</h1>
+          <p class="hero-desc">走進電機科技的核心，從前瞻講座到親手實作，再到實驗室探索。兩天的交流與體驗，開啟與成大電機的深度對話。</p>
+          <div class="hero-meta">
+            <div><span class="meta-label">活動日期 / DATE</span><span class="meta-value">2027 年 1 月 28 日－29 日</span></div>
+            <div><span class="meta-label">報到地點 / VENUE</span><span class="meta-value">成功大學自強校區電機系館</span></div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#agenda">查看活動流程 <span>↘</span></a>
+            <a class="btn btn-ghost" href="#highlights">認識營隊亮點</a>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-hint">SCROLL TO EXPLORE</div>
+    </section>
+
+    <section id="highlights">
+      <div class="section-wrap">
+        <div class="section-head reveal">
+          <div class="section-kicker">CAMP HIGHLIGHTS</div>
+          <h2>研習營核心亮點</h2>
+          <p>從知識、實作到研究現場，串起完整的電機探索體驗</p>
+          <div class="rule"></div>
+        </div>
+        <div class="intro-grid">
+          <article class="feature reveal">
+            <span class="feature-num">01</span><div class="feature-icon">⌁</div>
+            <h3>前沿科技講座</h3>
+            <p>透過科技講座接觸電機領域的多元議題，認識前瞻技術與研究方向，掌握科技發展的脈動。</p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-num">02</span><div class="feature-icon">◈</div>
+            <h3>手作藍芽音響實作</h3>
+            <p>安排完整的下午實作時段，從動手組裝的過程中體驗電機知識如何轉化為生活中的科技作品。</p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-num">03</span><div class="feature-icon">⌘</div>
+            <h3>實驗室導覽與交流</h3>
+            <p>走訪成大電機系實驗室，近距離認識研究環境，並透過午餐交流座談分享想法與提問。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="agenda" id="agenda">
+      <div class="section-wrap">
+        <div class="section-head reveal">
+          <div class="section-kicker">TWO-DAY PROGRAM</div>
+          <h2>兩日完整活動流程</h2>
+          <p>依照活動時段展開，掌握每一段研習旅程</p>
+          <div class="rule"></div>
+        </div>
+
+        <div class="day" id="day1">
+          <div class="day-heading reveal">
+            <span class="day-label">DAY 01</span><h3>相聚成大・科技啟程</h3><p>民國 116 年 1 月 28 日（星期四）</p>
+          </div>
+          <div class="timeline">
+            <article class="event reveal"><div class="event-time">10:30 — 11:00</div><div class="event-card"><h4 class="event-title">歡喜相逢｜成功大學自強校區電機系報到</h4><p class="event-desc">研習營正式揭開序幕。請至成功大學自強校區電機系館完成報到，與來自各地的師長及活動團隊相見歡，準備展開兩天的科技交流。</p></div></article>
+            <article class="event reveal"><div class="event-time">11:00 — 11:50</div><div class="event-card"><h4 class="event-title">系所介紹</h4><p class="event-desc">認識國立成功大學電機工程學系的系所特色與學習環境，進一步了解電機領域的學習面向及未來發展。</p></div></article>
+            <article class="event reveal"><div class="event-time">11:50 — 12:00</div><div class="event-card"><h4 class="event-title">系館門口大合照</h4><p class="event-desc">在電機系館前留下本次研習營的第一張共同紀念照，記錄參與者齊聚成大的精彩時刻。</p></div></article>
+            <article class="event reveal"><div class="event-time">12:00 — 13:10</div><div class="event-card"><h4 class="event-title">美味午餐</h4><p class="event-desc">享用午餐並稍作休息，利用輕鬆的用餐時光與其他參與者交流，為下午的活動補充能量。</p></div></article>
+            <article class="event reveal"><div class="event-time">13:10 — 13:55</div><div class="event-card"><h4 class="event-title">科技講座（一）</h4><p class="event-desc">透過專題分享認識電機與科技領域的研究主題，從不同角度探索技術發展及其應用。</p></div></article>
+            <article class="event break reveal"><div class="event-time">13:55 — 14:00</div><div class="event-card"><h4 class="event-title">換場 &amp; 休息時間</h4><p class="event-desc">短暫休息並移動至實作場地，準備接下來的動手體驗。</p></div></article>
+            <article class="event reveal"><div class="event-time">14:00 — 17:00</div><div class="event-card"><h4 class="event-title">手作藍芽音響課程</h4><p class="event-desc">本次研習營的實作重點時段！跟著課程步驟動手組裝藍芽音響，從實際操作中體會電路與電子元件的應用，完成專屬於自己的科技作品。</p><span class="event-note">實作體驗 · 約 3 小時</span></div></article>
+            <article class="event reveal"><div class="event-time">17:00 — 17:30</div><div class="event-card"><h4 class="event-title">住宿老師前往太子文旅 Check in</h4><p class="event-desc">安排住宿的老師前往太子文旅辦理入住，稍作整理與休息，準備晚間交流活動。</p></div></article>
+            <article class="event reveal"><div class="event-time">18:00 — 20:30</div><div class="event-card"><h4 class="event-title">晚宴｜台南遠東香格里拉</h4><p class="event-desc">於台南遠東香格里拉共進晚宴，在餐敘中延續白天的交流，促進師長與參與者之間的互動。</p><span class="event-note">地點：台南遠東香格里拉</span></div></article>
+          </div>
+        </div>
+
+        <div class="day" id="day2">
+          <div class="day-heading reveal">
+            <span class="day-label">DAY 02</span><h3>深入探索・滿載而歸</h3><p>民國 116 年 1 月 29 日（星期五）</p>
+          </div>
+          <div class="timeline">
+            <article class="event reveal"><div class="event-time">08:30 — 09:00</div><div class="event-card"><h4 class="event-title">太子文旅 1 樓廣場集合，步行至系館</h4><p class="event-desc">請於太子文旅一樓廣場集合，再一同步行前往電機系館，迎接第二天的研習行程。</p><span class="event-note">貼心提醒：行李可先寄放在飯店大廳</span></div></article>
+            <article class="event reveal"><div class="event-time">09:00 — 09:50</div><div class="event-card"><h4 class="event-title">招生講座</h4><p class="event-desc">認識成大電機系的招生資訊與學習環境，透過講座了解相關升學資訊，為未來的學習規劃蒐集參考。</p></div></article>
+            <article class="event break reveal"><div class="event-time">09:50 — 10:00</div><div class="event-card"><h4 class="event-title">Break</h4><p class="event-desc">課間休息時間，稍作放鬆並準備下一場講座。</p></div></article>
+            <article class="event reveal"><div class="event-time">10:00 — 10:45</div><div class="event-card"><h4 class="event-title">科技講座（二）</h4><p class="event-desc">延續前一天的科技探索，透過第二場專題講座接觸更多電機相關主題，拓展對領域應用的想像。</p></div></article>
+            <article class="event break reveal"><div class="event-time">10:45 — 11:00</div><div class="event-card"><h4 class="event-title">Coffee Break</h4><p class="event-desc">享用咖啡與茶點，利用短暫空檔補充能量，準備前往實驗室參觀。</p></div></article>
+            <article class="event reveal"><div class="event-time">11:00 — 12:00</div><div class="event-card"><h4 class="event-title">系所導覽｜實驗室參觀</h4><p class="event-desc">走進成大電機系的研究空間，實際認識實驗室環境與研究設備，從現場觀察感受電機工程的研究日常。</p><span class="event-note">校園探索 · 實地參訪</span></div></article>
+            <article class="event reveal"><div class="event-time">12:00 — 13:30</div><div class="event-card"><h4 class="event-title">享用午餐與交流座談時間</h4><p class="event-desc">在午餐與座談中整理兩天的收穫，與師長及其他參與者交流心得、提出問題，為研習營留下完整的回饋。</p></div></article>
+            <article class="event reveal"><div class="event-time">13:30</div><div class="event-card"><h4 class="event-title">賦歸</h4><p class="event-desc">兩天的鳳凰科技研習旅程告一段落，帶著新的知識、交流回憶與實作體驗，踏上返程。</p></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="reveal">
+        <div class="section-kicker">SEE YOU AT NCKU</div>
+        <h2>讓好奇心，成為探索科技的起點。</h2>
+        <p>2027 成大電機鳳凰科技教師研習營，期待與你在成大相見。</p>
+        <a class="btn btn-primary" href="#home">回到頁面頂端 ↑</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2027 <strong>國立成功大學電機工程學系</strong>｜鳳凰科技教師研習營籌備團隊</footer>
+
+  <script>
+    // 行動版導覽選單
+    const menuButton = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.nav');
+    menuButton.addEventListener('click', () => {
+      const opened = nav.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(opened));
+      menuButton.textContent = opened ? '×' : '☰';
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.textContent = '☰';
+    }));
+
+    // 區塊進場動畫
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // 晶片與光束周圍的星點閃爍
+    (() => {
+      const canvas = document.getElementById('sparkles');
+      const ctx = canvas.getContext('2d');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let width = 0, height = 0, dpr = 1, particles = [], raf = 0;
+      const colors = ['#ffffff', '#45f3f3', '#a5ffff', '#55d9ef'];
+      class Spark {
+        constructor(initial = false) { this.reset(initial); }
+        reset(initial = false) {
+          const beam = Math.random() > .34;
+          if (beam) {
+            const t = Math.random();
+            this.x = width * (.12 + t * .52) + (Math.random() - .5) * 90;
+            this.y = height * (.55 - t * .48) + (Math.random() - .5) * 85;
+          } else {
+            this.x = width * (.04 + Math.random() * .46);
+            this.y = height * (.24 + Math.random() * .64);
+          }
+          this.size = Math.random() * 1.8 + .6;
+          this.base = Math.random() * .65 + .25;
+          this.phase = initial ? Math.random() * Math.PI * 2 : 0;
+          this.speed = Math.random() * .026 + .009;
+          this.alpha = initial ? Math.random() * this.base : 0;
+          this.vx = Math.random() * .22 + .035;
+          this.vy = -(Math.random() * .15 + .025);
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.cross = Math.random() > .76;
+        }
+        update() {
+          this.phase += this.speed;
+          this.alpha = ((Math.sin(this.phase) + 1) / 2) * this.base;
+          this.x += this.vx; this.y += this.vy;
+          if (this.x > width * .76 || this.y < -8) this.reset();
+        }
+        draw() {
+          if (this.alpha < .025) return;
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 13;
+          ctx.shadowColor = '#45f3f3';
+          ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+          if (this.cross && this.alpha > .48) {
+            const r = this.size * 3.8;
+            ctx.strokeStyle = this.color; ctx.lineWidth = .75;
+            ctx.beginPath(); ctx.moveTo(this.x-r,this.y); ctx.lineTo(this.x+r,this.y);
+            ctx.moveTo(this.x,this.y-r); ctx.lineTo(this.x,this.y+r); ctx.stroke();
+          }
+          ctx.restore();
+        }
+      }
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        width = rect.width; height = rect.height;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        particles = Array.from({ length: width < 700 ? 42 : 82 }, () => new Spark(true));
+        if (reduceMotion) drawStatic();
+      }
+      function drawStatic() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => p.draw());
+      }
+      function animate() {
+        if (document.hidden || reduceMotion) return;
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        raf = requestAnimationFrame(animate);
+      }
+      function start() {
+        cancelAnimationFrame(raf);
+        if (reduceMotion) { drawStatic(); return; }
+        if (!document.hidden) animate();
+      }
+      document.addEventListener('visibilitychange', start);
+      window.addEventListener('resize', resize);
+      resize(); start();
+    })();
+  </script>
+</body>
+</html>

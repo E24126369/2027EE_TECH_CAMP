@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Zone - 科技傳送門動態背景</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Inter 與 Orbitron 科技字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-cyan: #00f2fe;
+            --secondary-blue: #4facfe;
+            --accent-mint: #38ef7d;
+            --deep-bg: #030e1c;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--deep-bg);
+            font-family: 'Inter', sans-serif;
+            color: #e2f1f8;
+            user-select: none;
+        }
+
+        .font-tech {
+            font-family: 'Orbitron', 'Inter', sans-serif;
+        }
+
+        /* 背景圖層與微幅呼吸縮放動畫 */
+        #bg-wrapper {
+            position: fixed;
+            inset: -2%;
+            width: 104%;
+            height: 104%;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #bg-image-layer {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            animation: portalBreathing 14s ease-in-out infinite alternate;
+            transition: opacity 0.6s ease, transform 0.2s ease-out;
+        }
+
+        @keyframes portalBreathing {
+            0% {
+                transform: scale(1.0) translate(0px, 0px);
+                filter: brightness(0.96) contrast(1.02);
+            }
+            50% {
+                transform: scale(1.028) translate(-4px, -2px);
+                filter: brightness(1.04) contrast(1.05);
+            }
+            100% {
+                transform: scale(1.012) translate(2px, 3px);
+                filter: brightness(0.98) contrast(1.03);
+            }
+        }
+
+        /* 備援背景畫布（當未載入本地 signup_bg.jpg 時自動繪製高還原度場景） */
+        #fallback-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 傳送門光束波動動態疊加畫布 */
+        #portal-fx-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: screen; /* 關鍵混合模式：讓光束與底圖自然融合發光 */
+        }
+
+        /* 微暗角光影遮罩，增加畫面景深 */
+        .vignette-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: radial-gradient(circle at 75% 35%, transparent 25%, rgba(2, 10, 22, 0.45) 85%, rgba(1, 6, 15, 0.8) 100%);
+        }
+
+        /* 毛玻璃科技表單卡片 */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(8, 28, 48, 0.72) 0%, rgba(4, 15, 30, 0.84) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 242, 254, 0.28);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.65),
+                0 0 25px rgba(0, 242, 254, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.5);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.75),
+                0 0 35px rgba(0, 242, 254, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* 倒數計時器方塊樣式 */
+        .countdown-box {
+            background: rgba(3, 14, 28, 0.72);
+            border: 1px solid rgba(0, 242, 254, 0.28);
+            box-shadow: inset 0 0 15px rgba(0, 242, 254, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-box:hover {
+            border-color: rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 16px rgba(0, 242, 254, 0.22), inset 0 0 15px rgba(0, 242, 254, 0.14);
+            transform: translateY(-2px);
+        }
+
+        /* 能量脈衝連結按鈕 */
+        .btn-portal {
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 50%, #00f2fe 100%);
+            background-size: 200% auto;
+            box-shadow: 0 0 22px rgba(0, 242, 254, 0.45);
+            transition: all 0.35s ease;
+        }
+
+        .btn-portal:hover {
+            background-position: right center;
+            box-shadow: 0 0 34px rgba(0, 242, 254, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn-portal:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 0. 備援繪圖層 (當未載入本地 signup_bg.jpg 時顯示高擬真科技傳送門底圖) -->
+    <canvas id="fallback-canvas"></canvas>
+
+    <!-- 1. 背景圖層 (自動嘗試載入 signup_bg.jpg) -->
+    <div id="bg-wrapper">
+        <div id="bg-image-layer" style="opacity: 0;"></div>
+    </div>
+
+    <!-- 2. 傳送門光束波動動態疊加層 -->
+    <canvas id="portal-fx-canvas"></canvas>
+
+    <!-- 3. 景深暗角遮罩 -->
+    <div class="vignette-overlay"></div>
+
+    <!-- 4. 主要內容區：左側毛玻璃科技報名入口卡片 (與右側傳送門視覺平衡) -->
+    <main id="main-ui-container" class="relative z-20 w-full h-full flex items-center justify-center lg:justify-start px-5 sm:px-12 lg:px-20">
+        <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+            <!-- 卡片頂部光條裝飾 -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-85"></div>
+
+            <!-- 狀態標籤與標題區 -->
+            <div class="mb-5">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/35 text-cyan-300 text-xs font-medium mb-3">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>EVENT REGISTRATION OPEN</span>
+                </div>
+                <h1 class="font-tech text-2xl sm:text-3xl font-bold tracking-wide text-white leading-tight">
+                    Registration <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-emerald-300">Zone</span>
+                </h1>
+                <p class="text-slate-300/85 text-xs sm:text-sm mt-2 leading-relaxed">
+                    報名傳送門已開啟！立即點擊下方連結前往 2027 成大鳳凰科技教師營-報名表單。
+                </p>
+            </div>
+
+            <!-- 報名倒數計時器區塊 -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between text-xs text-cyan-200/90 mb-2.5">
+                    <span class="font-medium flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        報名截止倒數 / DEADLINE
+                    </span>
+                    <span id="deadline-date-text" class="font-mono text-[11px] text-cyan-400/90"></span>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
+                    <!-- 天 -->
+                    <div class="countdown-box rounded-2xl py-3 px-2 text-center">
+                        <div id="cd-days" class="font-tech text-2xl sm:text-3xl font-bold text-white tracking-wider">14</div>
+                        <div class="text-[11px] text-cyan-300/80 font-medium mt-0.5">天 DAYS</div>
+                    </div>
+                    <!-- 時 -->
+                    <div class="countdown-box rounded-2xl py-3 px-2 text-center">
+                        <div id="cd-hours" class="font-tech text-2xl sm:text-3xl font-bold text-cyan-300 tracking-wider">00</div>
+                        <div class="text-[11px] text-cyan-300/80 font-medium mt-0.5">時 HRS</div>
+                    </div>
+                    <!-- 分 -->
+                    <div class="countdown-box rounded-2xl py-3 px-2 text-center">
+                        <div id="cd-minutes" class="font-tech text-2xl sm:text-3xl font-bold text-cyan-300 tracking-wider">00</div>
+                        <div class="text-[11px] text-cyan-300/80 font-medium mt-0.5">分 MIN</div>
+                    </div>
+                    <!-- 秒 -->
+                    <div class="countdown-box rounded-2xl py-3 px-2 text-center">
+                        <div id="cd-seconds" class="font-tech text-2xl sm:text-3xl font-bold text-emerald-300 tracking-wider">00</div>
+                        <div class="text-[11px] text-cyan-300/80 font-medium mt-0.5">秒 SEC</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 營隊亮點簡述 -->
+            <div class="mb-6 p-3.5 rounded-2xl bg-slate-950/50 border border-cyan-500/20 space-y-2 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                    <span>涵蓋系所介紹、科技講座、手作藍芽音響課程、實驗室參觀等豐富體驗</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>名額有限，30 名額滿即提前關閉報名表單</span>
+                </div>
+            </div>
+
+            <!-- 前往填寫報名表單外部點擊連結按鈕 (請於 href 替換為您的 Google 表單或報名網址) -->
+            <div>
+                <a id="registration-link-btn"
+                   href="https://forms.gle/f7o3BbNQ1LprUnvy7"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-portal w-full py-3.5 px-6 rounded-xl text-slate-950 font-bold text-sm sm:text-base tracking-wider flex items-center justify-center gap-2.5 cursor-pointer no-underline">
+                    <span>前往填寫報名表單</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- 點擊連結互動提示框 -->
+            <div id="link-toast" class="hidden mt-4 p-3 rounded-xl bg-cyan-500/15 border border-cyan-400/45 text-cyan-200 text-xs flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-cyan-300 shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <span>已為您開啟外部報名表單視窗，請於新分頁完成資料填寫！</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * ==========================================
+         * 1. 報名截止倒數計時器設定 (可在此自由調整截止時間)
+         * ==========================================
+         */
+        (function initCountdown() {
+            // 預設設定為「開啟網頁當下往後推算 14 天」
+            // 若要指定固定日期時間，可將下行改為：const DEADLINE_TIMESTAMP = new Date('2026-12-31T23:59:59').getTime();
+            const DEADLINE_TIMESTAMP = new Date('2026-12-25T23:59:59').getTime();
+
+            const daysEl = document.getElementById('cd-days');
+            const hoursEl = document.getElementById('cd-hours');
+            const minutesEl = document.getElementById('cd-minutes');
+            const secondsEl = document.getElementById('cd-seconds');
+            const deadlineTextEl = document.getElementById('deadline-date-text');
+
+            // 格式化顯示目標截止日期
+            const targetDate = new Date(DEADLINE_TIMESTAMP);
+            const yyyy = targetDate.getFullYear();
+            const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(targetDate.getDate()).padStart(2, '0');
+            const hh = String(targetDate.getHours()).padStart(2, '0');
+            const min = String(targetDate.getMinutes()).padStart(2, '0');
+            deadlineTextEl.textContent = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
+
+            function updateTimer() {
+                const now = Date.now();
+                const diff = Math.max(0, DEADLINE_TIMESTAMP - now);
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                daysEl.textContent = String(days).padStart(2, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        })();
+
+        /**
+         * ==========================================
+         * 2. 傳送門光束波動動態引擎 (固定最佳視覺參數)
+         * ==========================================
+         */
+        (function () {
+            const fxCanvas = document.getElementById('portal-fx-canvas');
+            const fxCtx = fxCanvas.getContext('2d');
+
+            const fallbackCanvas = document.getElementById('fallback-canvas');
+            const fbCtx = fallbackCanvas.getContext('2d');
+
+            const bgImageLayer = document.getElementById('bg-image-layer');
+
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            // 固定最佳光束波動與互動參數
+            const state = {
+                intensity: 1.0,       // 固定波動強度 100%
+                speed: 1.0,           // 固定光束噴發速度 1.0x
+                mouseX: 0.5,
+                mouseY: 0.5,
+                targetMouseX: 0.5,
+                targetMouseY: 0.5,
+                hasCustomImage: false,
+                time: 0
+            };
+
+            // 傳送門核心相對座標與光束發射角度 (精準匹配 signup_bg.jpg)
+            const PORTAL_ANCHOR = {
+                xRatio: 0.795,        // 傳送門中心 X 比例
+                yRatio: 0.365,        // 傳送門中心 Y 比例
+                beamAngle: 148 * (Math.PI / 180) // 朝左下角射出 (Canvas 座標系中 0度向右, 90度向下, 148度為左下約32度仰角)
+            };
+
+            // 調整畫布尺寸
+            function resizeCanvases() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                fxCanvas.width = width * dpr;
+                fxCanvas.height = height * dpr;
+                fxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                fallbackCanvas.width = width * dpr;
+                fallbackCanvas.height = height * dpr;
+                fbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                if (!state.hasCustomImage) {
+                    drawFallbackScene();
+                }
+            }
+
+            /**
+             * 繪製高還原度的備援科技傳送門底圖 (當預覽環境尚未載入本地 signup_bg.jpg 時顯示)
+             */
+            function drawFallbackScene() {
+                const w = width;
+                const h = height;
+                fbCtx.clearRect(0, 0, w, h);
+
+                // 1. 深邃青藍漸層背景
+                const bgGrad = fbCtx.createRadialGradient(w * 0.78, h * 0.35, 20, w * 0.4, h * 0.6, Math.max(w, h) * 0.9);
+                bgGrad.addColorStop(0, '#0c4a60');
+                bgGrad.addColorStop(0.35, '#06273c');
+                bgGrad.addColorStop(0.75, '#031324');
+                bgGrad.addColorStop(1, '#010812');
+                fbCtx.fillStyle = bgGrad;
+                fbCtx.fillRect(0, 0, w, h);
+
+                // 2. 背景電路板走線紋理
+                fbCtx.save();
+                fbCtx.strokeStyle = 'rgba(34, 211, 238, 0.11)';
+                fbCtx.lineWidth = 1.2;
+                const gridSteps = 14;
+                for (let i = 0; i < gridSteps; i++) {
+                    const startX = w * (0.25 + i * 0.05);
+                    const startY = 0;
+                    fbCtx.beginPath();
+                    fbCtx.moveTo(startX, startY);
+                    fbCtx.lineTo(startX, h * (0.15 + (i % 4) * 0.06));
+                    fbCtx.lineTo(startX + 45, h * (0.15 + (i % 4) * 0.06) + 45);
+                    fbCtx.lineTo(startX + 45, h * 0.45);
+                    fbCtx.stroke();
+
+                    // 節點小圓圈
+                    fbCtx.beginPath();
+                    fbCtx.arc(startX + 45, h * 0.45, 2.5, 0, Math.PI * 2);
+                    fbCtx.stroke();
+                }
+
+                // 右下角等距網格線
+                fbCtx.strokeStyle = 'rgba(56, 189, 248, 0.09)';
+                for (let i = -5; i < 12; i++) {
+                    fbCtx.beginPath();
+                    fbCtx.moveTo(w * 0.45 + i * 55, h);
+                    fbCtx.lineTo(w, h * 0.55 + i * 32);
+                    fbCtx.stroke();
+                }
+                fbCtx.restore();
+
+                // 3. 右側立體六角科技傳送門裝置
+                const px = w * PORTAL_ANCHOR.xRatio;
+                const py = h * PORTAL_ANCHOR.yRatio;
+                const radius = Math.min(w, h) * 0.21;
+
+                fbCtx.save();
+                fbCtx.translate(px, py);
+                // 透視壓縮讓傳送門呈現向左前方傾斜的立體感
+                fbCtx.rotate(-0.18);
+                fbCtx.scale(0.68, 1.0);
+
+                // 外環機械裝甲
+                const outerGrad = fbCtx.createLinearGradient(-radius, -radius, radius, radius);
+                outerGrad.addColorStop(0, '#1e3a5f');
+                outerGrad.addColorStop(0.5, '#0f2942');
+                outerGrad.addColorStop(1, '#071729');
+
+                fbCtx.beginPath();
+                fbCtx.arc(0, 0, radius, 0, Math.PI * 2);
+                fbCtx.fillStyle = outerGrad;
+                fbCtx.fill();
+                fbCtx.lineWidth = 4;
+                fbCtx.strokeStyle = '#38bdf8';
+                fbCtx.stroke();
+
+                // 裝甲分段刻度
+                for (let a = 0; a < 12; a++) {
+                    const ang = (a * Math.PI) / 6;
+                    fbCtx.save();
+                    fbCtx.rotate(ang);
+                    fbCtx.fillStyle = a % 2 === 0 ? '#0284c7' : '#0c4a6e';
+                    fbCtx.fillRect(radius * 0.84, -8, radius * 0.16, 16);
+                    fbCtx.restore();
+                }
+
+                // 內部發光六邊形能量場
+                const innerR = radius * 0.72;
+                const coreGrad = fbCtx.createRadialGradient(0, 0, 5, 0, 0, innerR);
+                coreGrad.addColorStop(0, '#ffffff');
+                coreGrad.addColorStop(0.3, '#67e8f9');
+                coreGrad.addColorStop(0.7, '#0284c7');
+                coreGrad.addColorStop(1, '#082f49');
+
+                fbCtx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const hexAng = (i * Math.PI) / 3;
+                    const hx = Math.cos(hexAng) * innerR;
+                    const hy = Math.sin(hexAng) * innerR;
+                    if (i === 0) fbCtx.moveTo(hx, hy);
+                    else fbCtx.lineTo(hx, hy);
+                }
+                fbCtx.closePath();
+                fbCtx.fillStyle = coreGrad;
+                fbCtx.fill();
+                fbCtx.lineWidth = 2.5;
+                fbCtx.strokeStyle = '#a5f3fc';
+                fbCtx.stroke();
+
+                // 六角蜂巢網格紋理
+                fbCtx.strokeStyle = 'rgba(207, 250, 254, 0.35)';
+                fbCtx.lineWidth = 1;
+                fbCtx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const hexAng = (i * Math.PI) / 3;
+                    fbCtx.moveTo(0, 0);
+                    fbCtx.lineTo(Math.cos(hexAng) * innerR, Math.sin(hexAng) * innerR);
+                }
+                fbCtx.stroke();
+
+                fbCtx.restore();
+            }
+
+            /**
+             * 粒子與能量光線物件池
+             */
+            const particles = [];
+            const streaks = [];
+            const PARTICLE_COUNT = 65;
+            const STREAK_COUNT = 22;
+
+            function initEntities() {
+                particles.length = 0;
+                streaks.length = 0;
+
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(createParticle(true));
+                }
+                for (let i = 0; i < STREAK_COUNT; i++) {
+                    streaks.push(createStreak(true));
+                }
+            }
+
+            function createParticle(randomProgress = false) {
+                return {
+                    progress: randomProgress ? Math.random() : 0,
+                    speed: 0.0035 + Math.random() * 0.0075,
+                    spreadOffset: (Math.random() - 0.5) * 180, // 垂直於光束的擴散偏移
+                    waveAmp: 8 + Math.random() * 18,
+                    waveFreq: 3 + Math.random() * 5,
+                    wavePhase: Math.random() * Math.PI * 2,
+                    size: 1.2 + Math.random() * 2.8,
+                    hue: Math.random() > 0.35 ? 186 : 158 // 青色或薄荷綠
+                };
+            }
+
+            function createStreak(randomProgress = false) {
+                return {
+                    progress: randomProgress ? Math.random() : 0,
+                    speed: 0.006 + Math.random() * 0.011,
+                    spreadOffset: (Math.random() - 0.5) * 145,
+                    length: 45 + Math.random() * 110,
+                    thickness: 1.2 + Math.random() * 2.5,
+                    alpha: 0.35 + Math.random() * 0.55
+                };
+            }
+
+            /**
+             * 繪製波動光束帶 (Undulating Sine-Wave Light Beams)
+             */
+            function drawUndulatingBeams(ctx, originX, originY, beamLen, t) {
+                const beamConfigs = [
+                    { widthStart: 42, widthEnd: 240, amp: 14, freq: 0.009, speed: 3.2, color: 'rgba(0, 242, 254, 0.22)', phase: 0 },
+                    { widthStart: 28, widthEnd: 175, amp: 18, freq: 0.012, speed: 4.1, color: 'rgba(56, 239, 125, 0.16)', phase: 1.8 },
+                    { widthStart: 18, widthEnd: 110, amp: 10, freq: 0.015, speed: 5.0, color: 'rgba(165, 243, 252, 0.28)', phase: 3.5 },
+                    { widthStart: 65, widthEnd: 340, amp: 22, freq: 0.006, speed: 2.2, color: 'rgba(14, 165, 233, 0.15)', phase: 5.1 }
+                ];
+
+                const segments = 55;
+                const step = beamLen / segments;
+
+                beamConfigs.forEach(cfg => {
+                    const topPoints = [];
+                    const bottomPoints = [];
+
+                    for (let i = 0; i <= segments; i++) {
+                        const dist = i * step;
+                        const ratio = i / segments;
+
+                        // 光束隨距離擴散的半寬度
+                        const halfW = (cfg.widthStart + (cfg.widthEnd - cfg.widthStart) * Math.pow(ratio, 0.85)) * 0.5;
+
+                        // 正弦波動態起伏 (越遠離傳送門，波動幅度越明顯)
+                        const waveEnvelope = Math.sin(ratio * Math.PI * 0.85);
+                        const primaryWave = Math.sin(dist * cfg.freq - t * cfg.speed + cfg.phase) * cfg.amp * waveEnvelope * state.intensity;
+                        const secondaryRipple = Math.cos(dist * cfg.freq * 1.9 - t * (cfg.speed * 1.4)) * (cfg.amp * 0.35) * waveEnvelope * state.intensity;
+
+                        const centerOffset = primaryWave + secondaryRipple;
+                        // 脈動呼吸寬度
+                        const widthPulse = 1 + Math.sin(dist * 0.015 - t * 4.5 + cfg.phase) * 0.18 * state.intensity;
+
+                        topPoints.push({ x: dist, y: centerOffset - halfW * widthPulse });
+                        bottomPoints.push({ x: dist, y: centerOffset + halfW * widthPulse });
+                    }
+
+                    ctx.save();
+                    ctx.translate(originX, originY);
+                    ctx.rotate(PORTAL_ANCHOR.beamAngle);
+
+                    // 建立沿光束方向的漸隱漸層
+                    const grad = ctx.createLinearGradient(0, 0, beamLen, 0);
+                    grad.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
+                    grad.addColorStop(0.08, cfg.color);
+                    grad.addColorStop(0.55, cfg.color);
+                    grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
+
+                    ctx.beginPath();
+                    ctx.moveTo(topPoints[0].x, topPoints[0].y);
+                    for (let i = 1; i < topPoints.length; i++) {
+                        ctx.lineTo(topPoints[i].x, topPoints[i].y);
+                    }
+                    for (let i = bottomPoints.length - 1; i >= 0; i--) {
+                        ctx.lineTo(bottomPoints[i].x, bottomPoints[i].y);
+                    }
+                    ctx.closePath();
+
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.restore();
+                });
+            }
+
+            /**
+             * 繪製傳送門核心能量脈衝波紋 (Portal Pulse Ripples)
+             */
+            function drawPortalRipples(ctx, originX, originY, t) {
+                const portalScale = Math.min(width, height) * 0.16;
+
+                // 1. 核心高能脈衝光暈
+                const pulse = 0.88 + Math.sin(t * 4.2) * 0.12 * state.intensity;
+                const coreGlow = ctx.createRadialGradient(originX, originY, 2, originX, originY, portalScale * 1.45 * pulse);
+                coreGlow.addColorStop(0, `rgba(224, 242, 254, ${0.75 * Math.min(state.intensity, 1.3)})`);
+                coreGlow.addColorStop(0.25, `rgba(34, 211, 238, ${0.42 * Math.min(state.intensity, 1.3)})`);
+                coreGlow.addColorStop(0.6, 'rgba(2, 132, 199, 0.12)');
+                coreGlow.addColorStop(1, 'rgba(2, 132, 199, 0)');
+
+                ctx.fillStyle = coreGlow;
+                ctx.beginPath();
+                ctx.arc(originX, originY, portalScale * 1.45 * pulse, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 2. 向外擴散並沿光束推進的立體能量波環
+                const rippleCount = 4;
+                for (let i = 0; i < rippleCount; i++) {
+                    const cycle = ((t * 0.55) + i / rippleCount) % 1; // 0 -> 1 循環
+                    const easeOut = 1 - Math.pow(1 - cycle, 2.2);
+
+                    // 波紋沿著光束方向稍微向前推出，營造能量噴發立體感
+                    const pushDist = easeOut * portalScale * 0.85;
+                    const rx = originX + Math.cos(PORTAL_ANCHOR.beamAngle) * pushDist;
+                    const ry = originY + Math.sin(PORTAL_ANCHOR.beamAngle) * pushDist;
+
+                    const ringRadius = portalScale * (0.25 + easeOut * 0.95);
+                    const alpha = Math.sin(cycle * Math.PI) * 0.55 * Math.min(state.intensity, 1.4);
+
+                    ctx.save();
+                    ctx.translate(rx, ry);
+                    ctx.rotate(-0.18);
+                    ctx.scale(0.65, 1.0); // 貼合傳送門橢圓透視角度
+
+                    ctx.beginPath();
+                    ctx.arc(0, 0, ringRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(103, 232, 249, ${alpha})`;
+                    ctx.lineWidth = 2.2 * (1 - cycle * 0.5);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            /**
+             * 繪製高速飛出的能量光線與發光粒子
+             */
+            function drawParticlesAndStreaks(ctx, originX, originY, beamLen, dt, t) {
+                ctx.save();
+                ctx.translate(originX, originY);
+                ctx.rotate(PORTAL_ANCHOR.beamAngle);
+
+                // 1. 高速能量光線 (Light Streaks)
+                streaks.forEach(s => {
+                    s.progress += s.speed * state.speed * dt * 60;
+                    if (s.progress > 1) {
+                        Object.assign(s, createStreak(false));
+                    }
+
+                    const dist = s.progress * beamLen;
+                    // 隨距離呈錐形發散
+                    const coneFactor = 0.25 + s.progress * 1.15;
+                    const waveY = Math.sin(dist * 0.01 - t * 4) * 12 * s.progress * state.intensity;
+                    const y = s.spreadOffset * coneFactor + waveY;
+
+                    const fade = Math.sin(s.progress * Math.PI);
+                    const grad = ctx.createLinearGradient(dist - s.length, y, dist, y);
+                    grad.addColorStop(0, 'rgba(0, 242, 254, 0)');
+                    grad.addColorStop(0.7, `rgba(103, 232, 249, ${s.alpha * fade * 0.8})`);
+                    grad.addColorStop(1, `rgba(255, 255, 255, ${s.alpha * fade})`);
+
+                    ctx.beginPath();
+                    ctx.moveTo(dist - s.length, y);
+                    ctx.lineTo(dist, y);
+                    ctx.strokeStyle = grad;
+                    ctx.lineWidth = s.thickness;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                });
+
+                // 2. 漂浮與噴射的能量光點 (Energy Particles)
+                particles.forEach(p => {
+                    p.progress += p.speed * state.speed * dt * 60;
+                    if (p.progress > 1) {
+                        Object.assign(p, createParticle(false));
+                    }
+
+                    const dist = p.progress * beamLen * 1.05;
+                    const coneFactor = 0.2 + p.progress * 1.35;
+                    const oscillate = Math.sin(p.progress * p.waveFreq * Math.PI + p.wavePhase + t * 2) * p.waveAmp * state.intensity;
+                    const y = p.spreadOffset * coneFactor + oscillate;
+
+                    const alpha = Math.sin(p.progress * Math.PI) * 0.9;
+                    const radius = p.size * (1 - p.progress * 0.3);
+
+                    ctx.beginPath();
+                    ctx.arc(dist, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${p.hue}, 98%, 72%, ${alpha})`;
+                    ctx.shadowColor = `hsla(${p.hue}, 100%, 60%, 0.9)`;
+                    ctx.shadowBlur = 8;
+                    ctx.fill();
+                });
+
+                ctx.restore();
+            }
+
+            // 主動畫迴圈
+            let lastTimestamp = performance.now();
+            function animate(now) {
+                const dt = Math.min((now - lastTimestamp) / 1000, 0.05);
+                lastTimestamp = now;
+
+                state.time += dt * state.speed;
+
+                // 平滑滑鼠視差插值
+                state.mouseX += (state.targetMouseX - state.mouseX) * 0.06;
+                state.mouseY += (state.targetMouseY - state.mouseY) * 0.06;
+
+                const parallaxX = (state.mouseX - 0.5) * -18;
+                const parallaxY = (state.mouseY - 0.5) * -12;
+
+                // 套用背景微幅視差位移
+                bgImageLayer.style.transform = `translate3d(${parallaxX * 0.5}px, ${parallaxY * 0.5}px, 0)`;
+
+                fxCtx.clearRect(0, 0, width, height);
+
+                const originX = width * PORTAL_ANCHOR.xRatio + parallaxX;
+                const originY = height * PORTAL_ANCHOR.yRatio + parallaxY;
+                const beamLen = Math.hypot(width, height) * 0.78;
+
+                // 依序繪製：波動光束 -> 傳送門核心脈衝波紋 -> 高速能量光線與粒子
+                drawUndulatingBeams(fxCtx, originX, originY, beamLen, state.time);
+                drawPortalRipples(fxCtx, originX, originY, state.time);
+                drawParticlesAndStreaks(fxCtx, originX, originY, beamLen, dt, state.time);
+
+                requestAnimationFrame(animate);
+            }
+
+            /**
+             * 嘗試自動載入同目錄的 signup_bg.jpg，若失敗則保持顯示高擬真科技傳送門備援畫布
+             */
+            function tryLoadDefaultBackground() {
+                const testImg = new Image();
+                testImg.onload = function () {
+                    bgImageLayer.style.backgroundImage = `url('signup_bg.jpg')`;
+                    bgImageLayer.style.opacity = '1';
+                    fallbackCanvas.style.opacity = '0';
+                    state.hasCustomImage = true;
+                };
+                testImg.onerror = function () {
+                    // 預覽沙盒環境無本地檔案時，維持高精度科技傳送門備援畫布
+                    state.hasCustomImage = false;
+                };
+                testImg.src = 'signup_bg.jpg';
+            }
+
+            // 綁定視窗縮放、視差移動與報名連結點擊提示事件
+            function bindEvents() {
+                window.addEventListener('resize', resizeCanvases);
+
+                window.addEventListener('mousemove', (e) => {
+                    state.targetMouseX = e.clientX / width;
+                    state.targetMouseY = e.clientY / height;
+                });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        state.targetMouseX = e.touches[0].clientX / width;
+                        state.targetMouseY = e.touches[0].clientY / height;
+                    }
+                }, { passive: true });
+
+                // 點擊「前往填寫報名表單」連結時的視覺互動回饋
+                const regLinkBtn = document.getElementById('registration-link-btn');
+                const linkToast = document.getElementById('link-toast');
+                regLinkBtn.addEventListener('click', () => {
+                    linkToast.classList.remove('hidden');
+                    // 觸發一次短暫的傳送門能量暴衝視覺效果
+                    state.intensity = 1.65;
+                    setTimeout(() => {
+                        state.intensity = 1.0;
+                    }, 900);
+                });
+            }
+
+            // 啟動初始化
+            window.addEventListener('load', () => {
+                resizeCanvases();
+                initEntities();
+                tryLoadDefaultBackground();
+                bindEvents();
+                requestAnimationFrame(animate);
+            });
+        })();
+    </script>
+</body>
+</html>
